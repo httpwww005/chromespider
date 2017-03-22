@@ -4,4 +4,4 @@ from bottle import route, run
 def hello():
     return "Hello World!"
 
-run(host='localhost', debug=True)
+run(host='localhost', port=80, debug=True)
