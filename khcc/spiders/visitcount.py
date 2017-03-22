@@ -2,6 +2,7 @@
 import scrapy
 import urlparse
 import re
+import os
 
 class VisitcountSpider(scrapy.Spider):
     name = "visitcount"
