@@ -1,7 +1,10 @@
 from bottle import route, run
+import os
 
 @route('/hello')
 def hello():
     return "Hello World!"
 
-run(host='localhost', port=80, debug=True)
+
+port = os.environ['PORT']
+run(host='localhost', port=port, debug=True)
