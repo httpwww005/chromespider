@@ -7,4 +7,4 @@ def hello():
 
 
 port = os.environ['PORT']
-run(host='localhost', port=port, debug=True)
+run(host='0.0.0.0', port=port, debug=True)
