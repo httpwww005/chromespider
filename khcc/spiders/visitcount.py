@@ -16,7 +16,6 @@ class VisitcountSpider(scrapy.Spider):
         webdriver.ChromeOptions.binary_location = chrome_bin_path
         self.driver = webdriver.Chrome()
 
-
     def start_requests(self):
 	urls = [
             'http://khvillages.khcc.gov.tw/home02.aspx?ID=$4001&IDK=2&AP=$4001_SK--1^$4001_SK2--1^$4001_PN-1^$4001_HISTORY-0',
@@ -25,7 +24,7 @@ class VisitcountSpider(scrapy.Spider):
             'http://khvillages.khcc.gov.tw/home02.aspx?ID=$4011&IDK=2&AP=$4011_SK-^$4011_SK2--1^$4011_PN-2^$4011_HISTORY-0'
 	]
 
-	for url in urls:
+        for url in urls:
 	    yield scrapy.Request(url=url, callback=self.parse_url, dont_filter=True)
 
 
@@ -75,3 +74,6 @@ class VisitcountSpider(scrapy.Spider):
         yield {'location':location,
                 'address':address,
                 'count':count}
+
+    def spider_closed(self, spider):
+        pass
