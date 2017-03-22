@@ -1,18 +1,17 @@
 from bottle import route, run
 import os
 
-
-from selenium import webdriver
-webdriver.ChromeOptions.binary_location = "/app/.apt/usr/bin/google-chrome-stable"
-driver = webdriver.Chrome()
-
+import scrapy
+from scrapy.crawler import CrawlerProcess
+from scrapy.utils.project import get_project_settings
 
 
-@route('/')
+@route('/run')
 def hello():
-    driver.get("http://140.117.11.2")
-    source = driver.page_source
-    return source 
+    process = CrawlerProcess(get_project_settings())
+    process.crawl('visitcount')
+    process.start() # the script will block here until the crawling is finished
+    return "running"
 
 
 port = int(os.environ.get('PORT',5000))
