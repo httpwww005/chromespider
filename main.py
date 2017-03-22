@@ -15,7 +15,6 @@ from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
 from pydispatch import dispatcher
 from twisted.internet import reactor
-from billiard import Process
 from khcc.spiders.visitcount import VisitcountSpider
 from scrapy.utils.log import configure_logging
 from scrapy.crawler import CrawlerRunner
