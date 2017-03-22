@@ -30,7 +30,9 @@ def go():
 
     return dataset.html
 
-
+@route('/view')
+def view():
+    return dataset.html
 
 port = int(os.environ.get('PORT',5000))
 run(host='0.0.0.0', port=port, debug=True)
