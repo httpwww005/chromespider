@@ -22,8 +22,7 @@ def go():
     process = CrawlerProcess(get_project_settings())
     process.crawl('visitcount')
 
-    process.start() # the script will block here until the crawling is finished
-    process.stop()
+    process.start(stop_after_crawl=False) # the script will block here until the crawling is finished
     
     # process csv
 
