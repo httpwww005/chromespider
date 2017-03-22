@@ -1,9 +1,18 @@
 from bottle import route, run
 import os
 
+
+from selenium import webdriver
+webdriver.ChromeOptions.binary_location = "/app/.apt/usr/bin/google-chrome-stable"
+driver = webdriver.Chrome()
+
+
+
 @route('/')
 def hello():
-    return "Hello World!"
+    driver.get("http://140.117.11.2")
+    source = driver.page_source
+    return source 
 
 
 port = int(os.environ.get('PORT',5000))
