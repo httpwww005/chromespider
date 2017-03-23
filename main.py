@@ -83,7 +83,7 @@ def refresh():
 
     runner = CrawlerRunner(get_project_settings())
     d = runner.crawl(VisitcountSpider)
-    d.addBoth(lambda _: reactor.stop())
+    reactor.stop()
 
     t.start()
 
