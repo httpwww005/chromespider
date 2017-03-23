@@ -54,13 +54,13 @@ def run_spider():
     except OSError:
         pass
 
-    runner = CrawlerRunner(get_project_settings())
-    d = runner.crawl(VisitcountSpider)
-    d.addBoth(lambda _: reactor.stop())
-    reactor.run(installSignalHandlers=False)
-    #process = CrawlerProcess(get_project_settings())
-    #process.crawl('visitcount')
-    #process.start(stop_after_crawl=False)
+    #runner = CrawlerRunner(get_project_settings())
+    #d = runner.crawl(VisitcountSpider)
+    #d.addBoth(lambda _: reactor.stop())
+    #reactor.run(installSignalHandlers=False)
+    process = CrawlerProcess(get_project_settings())
+    process.crawl('visitcount')
+    process.start(stop_after_crawl=False)
     is_refreshing = False
 
 	
