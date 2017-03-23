@@ -81,10 +81,10 @@ def refresh():
     #t = threading.Thread(target=run_spider)
     #t.start()
     runner = CrawlerRunner(get_project_settings())
-    reactor.stop()
     d = runner.crawl(VisitcountSpider)
     #d.addBoth(lambda _: reactor.stop())
     reactor.run(installSignalHandlers=True)
+    reactor.stop()
     return "refreshing..."
     #return get_csvtable()
 
