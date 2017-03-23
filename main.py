@@ -48,7 +48,7 @@ def view():
 
 #crawler.signals.connect(reactor.stop, signal=signals.spider_closed)
 
-def run_spider(r):
+def run_spider():
     #is_refreshing = True
 
     try:
