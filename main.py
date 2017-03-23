@@ -10,6 +10,7 @@ from twisted.internet import reactor
 from khcc.spiders.visitcount import VisitcountSpider
 from scrapy.utils.log import configure_logging
 from scrapy.crawler import CrawlerRunner
+from scrapy.crawler import CrawlerProcess
 
 home = os.environ.get("HOME","/tmp")
 csv_file = os.path.join(home, "visitcount.csv") 
