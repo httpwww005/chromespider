@@ -56,10 +56,10 @@ def run_spider():
     except OSError:
         pass
 
-    #runner = CrawlerRunner(get_project_settings())
-    #d = runner.crawl(VisitcountSpider)
-    #d.addBoth(lambda _: reactor.stop())
-    #reactor.run(installSignalHandlers=False)
+    runner = CrawlerRunner(get_project_settings())
+    d = runner.crawl(VisitcountSpider)
+    d.addBoth(lambda _: reactor.stop())
+    reactor.run(installSignalHandlers=True)
     
     #dispatcher.connect(reactor.stop, signals.spider_closed)
     #process = CrawlerProcess(get_project_settings())
@@ -68,13 +68,13 @@ def run_spider():
     #is_refreshing = False
 
 
-    spider = VisitcountSpider()
-    crawler = Crawler(spider, get_project_settings())
-    dispatcher.connect(reactor.stop, signals.spider_closed)
-
-    crawler.crawl()
-    reactor.run()
-	
+    #    spider = VisitcountSpider()
+    #    crawler = Crawler(spider, get_project_settings())
+    #    dispatcher.connect(reactor.stop, signals.spider_closed)
+    #
+    #    crawler.crawl()
+    #    reactor.run()
+    #	
 
 @route('/refresh')
 def refresh():
