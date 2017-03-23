@@ -6,6 +6,7 @@ import os
 
 import scrapy
 from scrapy import signals
+from scrapy.crawler import Crawler
 from scrapy.utils.project import get_project_settings
 from twisted.internet import reactor
 from khcc.spiders.visitcount import VisitcountSpider
