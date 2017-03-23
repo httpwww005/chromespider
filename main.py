@@ -12,6 +12,9 @@ from scrapy.utils.log import configure_logging
 from scrapy.crawler import CrawlerRunner
 from scrapy.crawler import CrawlerProcess
 
+from cherrypy.wsgiserver import CherryPyWSGIServer
+
+
 home = os.environ.get("HOME","/tmp")
 csv_file = os.path.join(home, "visitcount.csv") 
 
@@ -66,4 +69,4 @@ def hello():
 
 
 port = int(os.environ.get('PORT',5000))
-run(host='0.0.0.0', port=port, debug=True)
+run(host='0.0.0.0', port=port, debug=True, server=CherryPyWSGIServer)
