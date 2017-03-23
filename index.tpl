@@ -20,6 +20,6 @@
 </head>
 <body>
 	<button id="refresh">Refresh</button>
-    <div id="message">{{message}}</div>
+    <div id="message">{{get("message","csv_file not available")}}</div>
 </body>
 </html>
