@@ -1,15 +1,10 @@
 from bottle import get, route, run, template
-from bottle.ext.websocket import GeventWebSocketServer
-from bottle.ext.websocket import websocket
 
 import tablib
 import csv
 import os
 
 import scrapy
-from scrapy import signals
-from scrapy.crawler import Crawler
-from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
 from twisted.internet import reactor
 from khcc.spiders.visitcount import VisitcountSpider
@@ -42,6 +37,7 @@ def index():
 def view():
     return get_csvtable()
 
+
 def run_spider():
     try:
         os.remove(csv_file)
@@ -53,10 +49,12 @@ def run_spider():
     d.addBoth(lambda _: reactor.stop())
     reactor.run()
 
+
 @route('/refresh')
 def refresh():
     run_spider()
     return get_csvtable()
+
 
 @route('/hello')
 def hello():
