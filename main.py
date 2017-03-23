@@ -56,7 +56,7 @@ def run_spider(r):
     except OSError:
         pass
 
-    runner = CrawlerRunner(get_project_settings())
+    #runner = CrawlerRunner(get_project_settings())
     #d = runner.crawl(VisitcountSpider)
     #d.addBoth(lambda _: reactor.stop())
     reactor.run(installSignalHandlers=True)
@@ -80,6 +80,8 @@ def run_spider(r):
 def refresh():
     e = threading.Event()
     t = threading.Thread(target=run_spider)
+
+    runner = CrawlerRunner(get_project_settings())
     d = runner.crawl(VisitcountSpider)
     d.addBoth(lambda _: reactor.stop())
 
