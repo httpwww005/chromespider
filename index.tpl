@@ -15,7 +15,7 @@
 			})
 			setInterval(function(){
 				$("#message").load("/view")
-			},10000)
+			},3000)
         });
     </script>
 </head>
