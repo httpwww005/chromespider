@@ -37,7 +37,7 @@ def get_csvtable():
 
 @get('/')
 def index():
-    return template('index')
+    return template('index', message="gg")
 
 @get('/websocket', apply=[websocket])
 def echo(ws):
