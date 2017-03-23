@@ -59,7 +59,7 @@ def run_spider():
     runner = CrawlerRunner(get_project_settings())
     d = runner.crawl(VisitcountSpider)
     reactor.run(installSignalHandlers=True)
-    reactor.stop()
+    #reactor.stop()
     #runner = CrawlerRunner(get_project_settings())
     #d = runner.crawl(VisitcountSpider)
     #d.addBoth(lambda _: reactor.stop())
