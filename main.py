@@ -5,6 +5,7 @@ import csv
 import os
 
 import scrapy
+from scrapy import signals
 from scrapy.utils.project import get_project_settings
 from twisted.internet import reactor
 from khcc.spiders.visitcount import VisitcountSpider
@@ -45,6 +46,8 @@ def view():
     return get_csvtable()
 
 is_refreshing = False
+
+crawler.signals.connect(reactor.stop, signal=signals.spider_closed)
 
 def run_spider():
     is_refreshing = True
