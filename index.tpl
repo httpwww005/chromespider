@@ -12,13 +12,14 @@
 			$("#message").load("/view")
 			$("#refresh").click(function(){
 				$("#message").text("Loading...")
-				$.ajax('/refresh', {
-				   data: {},
-				   timeout: 90000, // 1000 ms
-				   success: function (data) {
-					   $('#message').text(data);
-				   } 
-				})
+				setInterval(function(){
+					$.ajax('/refresh', {
+					   data: {},
+					   success: function (data) {
+						   $('#message').text(data);
+					   } 
+					})
+				},10000)
 			})
         });
     </script>
