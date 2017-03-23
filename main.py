@@ -48,7 +48,7 @@ def view():
 
 #crawler.signals.connect(reactor.stop, signal=signals.spider_closed)
 
-def run_spider():
+def run_spider(r):
     #is_refreshing = True
 
     try:
@@ -57,8 +57,8 @@ def run_spider():
         pass
 
     runner = CrawlerRunner(get_project_settings())
-    d = runner.crawl(VisitcountSpider)
-    d.addBoth(lambda _: reactor.stop())
+    #d = runner.crawl(VisitcountSpider)
+    #d.addBoth(lambda _: reactor.stop())
     reactor.run(installSignalHandlers=True)
     
     #dispatcher.connect(reactor.stop, signals.spider_closed)
@@ -81,6 +81,9 @@ def refresh():
     e = threading.Event()
     t = threading.Thread(target=run_spider)
     t.start()
+
+    d = runner.crawl(VisitcountSpider)
+    d.addBoth(lambda _: reactor.stop())
 
     return "refreshing..."
     #return get_csvtable()
