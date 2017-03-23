@@ -41,10 +41,8 @@ def index():
 def view():
     return get_csvtable()
 
-e = threading.Event()
-t = threading.Thread(target=run_spider, args=(e,))
 
-def run_spider(e):
+def run_spider():
     try:
         os.remove(csv_file)
     except OSError:
@@ -58,10 +56,12 @@ def run_spider(e):
     #process.crawl('visitcount')
     #process.start(stop_after_crawl=False)
 
-    e.set()	
 	
+
 @route('/refresh')
 def refresh():
+    e = threading.Event()
+    t = threading.Thread(target=run_spider)
     t.start()
 
     return "loading"
