@@ -12,6 +12,8 @@ from scrapy.utils.log import configure_logging
 from scrapy.crawler import CrawlerRunner
 from scrapy.crawler import CrawlerProcess
 
+import threading
+
 
 home = os.environ.get("HOME","/tmp")
 csv_file = os.path.join(home, "visitcount.csv") 
@@ -40,25 +42,29 @@ def view():
     return get_csvtable()
 
 
-def run_spider():
+def run_spider(e):
     try:
         os.remove(csv_file)
     except OSError:
         pass
 
-    #runner = CrawlerRunner(get_project_settings())
-    #d = runner.crawl(VisitcountSpider)
-    #d.addBoth(lambda _: reactor.stop())
-    #reactor.run()
-    process = CrawlerProcess(get_project_settings())
-    process.crawl('visitcount')
-    process.start(stop_after_crawl=False)
+    runner = CrawlerRunner(get_project_settings())
+    d = runner.crawl(VisitcountSpider)
+    d.addBoth(lambda _: reactor.stop())
+    reactor.run()
+    #process = CrawlerProcess(get_project_settings())
+    #process.crawl('visitcount')
+    #process.start(stop_after_crawl=False)
 
 
 @route('/refresh')
 def refresh():
-    run_spider()
-    return get_csvtable()
+    e = threading.Event()
+    t = threading.Thread(target=run_spider, args=(e,))
+    t.start()
+
+    return "loading"
+    #return get_csvtable()
 
 
 @route('/hello')
