@@ -20,6 +20,6 @@
 </head>
 <body>
 	<button id="refresh">Refresh</button>
-    <div id="message">this is message</div>
+    <div id="message">{{message}}</div>
 </body>
 </html>

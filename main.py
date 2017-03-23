@@ -33,7 +33,7 @@ def get_csvtable():
 
 @get('/')
 def index():
-    return template('index',message="this is index")
+    return template('index',message="csv_file is not available, click above button to fresh!")
 
 @get('/websocket', apply=[websocket])
 def echo(ws):
