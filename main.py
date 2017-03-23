@@ -14,6 +14,8 @@ from scrapy.utils.log import configure_logging
 from scrapy.crawler import CrawlerRunner
 from scrapy.crawler import CrawlerProcess
 
+from pydispatch import dispatcher
+
 import threading
 
 
@@ -48,7 +50,7 @@ def view():
 
 is_refreshing = False
 
-crawler.signals.connect(reactor.stop, signal=signals.spider_closed)
+#crawler.signals.connect(reactor.stop, signal=signals.spider_closed)
 
 def run_spider():
     is_refreshing = True
@@ -62,6 +64,7 @@ def run_spider():
     #d = runner.crawl(VisitcountSpider)
     #d.addBoth(lambda _: reactor.stop())
     #reactor.run(installSignalHandlers=False)
+    dispatcher.connect(reactor.stop, signals.spider_closed)
     process = CrawlerProcess(get_project_settings())
     process.crawl('visitcount')
     process.start(stop_after_crawl=False)
