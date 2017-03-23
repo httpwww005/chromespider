@@ -10,10 +10,15 @@
     <script>
         $(document).ready(function() {
 			$("#message").load("/view")
-
 			$("#refresh").click(function(){
 				$("#message").text("Loading...")
-				$("#message").load("/refresh")
+				$.ajax('/refresh', {
+				   data: {},
+				   timeout: 90000, // 1000 ms
+				   success: function (data) {
+					   $('#message').text(data);
+				   } 
+				})
 			})
         });
     </script>
