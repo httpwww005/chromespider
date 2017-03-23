@@ -49,10 +49,10 @@ def echo(ws):
 
 @route('/view')
 def view():
-    if not os.path.isfile(csv_file):
-        run_spider()
-
-    return get_csvtable()
+    if os.path.isfile(csv_file):
+        return get_csvtable()
+    else:
+        return "csv_file not available."
 
 def run_spider():
     try:
