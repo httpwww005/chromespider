@@ -64,7 +64,7 @@ def refresh():
     t = threading.Thread(target=run_spider)
     t.start()
 
-    return "loading"
+    return "refreshing"
     #return get_csvtable()
 
 

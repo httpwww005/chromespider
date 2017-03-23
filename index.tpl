@@ -12,15 +12,11 @@
 			$("#message").load("/view")
 			$("#refresh").click(function(){
 				$("#message").text("Loading...")
-				setInterval(function(){
-					$.ajax('/refresh', {
-					   data: {},
-					   success: function (data) {
-						   $('#message').text(data);
-					   } 
-					})
-				},10000)
+				$("#message").load('/refresh')
 			})
+			setInterval(function(){
+				$("#message").load("/view")
+			},10000)
         });
     </script>
 </head>
