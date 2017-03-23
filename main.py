@@ -59,7 +59,7 @@ def run_spider():
     #runner = CrawlerRunner(get_project_settings())
     #d = runner.crawl(VisitcountSpider)
     #d.addBoth(lambda _: reactor.stop())
-    reactor.run(installSignalHandlers=True)
+    #reactor.run(installSignalHandlers=True)
     #dispatcher.connect(reactor.stop, signals.spider_closed)
     #process = CrawlerProcess(get_project_settings())
     #process.crawl('visitcount')
@@ -77,16 +77,13 @@ def run_spider():
 
 @route('/refresh')
 def refresh():
-    e = threading.Event()
-    t = threading.Thread(target=run_spider)
-
+    #e = threading.Event()
+    #t = threading.Thread(target=run_spider)
+    #t.start()
     runner = CrawlerRunner(get_project_settings())
     d = runner.crawl(VisitcountSpider)
-
-    t.start()
-    import time
-    time.sleep(60)
-    reactor.stop()
+    d.addBoth(lambda _: reactor.stop())
+    reactor.run(installSignalHandlers=True)
     return "refreshing..."
     #return get_csvtable()
 
