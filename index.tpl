@@ -12,7 +12,7 @@
 			$("#message").load("/view")
 			$("#refresh").click(function(){
 				$("#message").text("Loading...")
-				$("#message").load('/refresh')
+				$.ajax('/refresh')
 			})
 			setInterval(function(){
 				$("#message").load("/view")

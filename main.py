@@ -29,7 +29,10 @@ def get_csvtable():
 
         return dataset.html
     else:
-        return "csv_file not available"
+        if( is_refreshing ):
+            return "loading..."
+        else:
+            return "csv_file not available, click above to refresh."
 
 
 @get('/')
@@ -41,8 +44,11 @@ def index():
 def view():
     return get_csvtable()
 
+is_refreshing = False
 
 def run_spider():
+    is_refreshing = True
+
     try:
         os.remove(csv_file)
     except OSError:
@@ -55,6 +61,7 @@ def run_spider():
     #process = CrawlerProcess(get_project_settings())
     #process.crawl('visitcount')
     #process.start(stop_after_crawl=False)
+    is_refreshing = False
 
 	
 
@@ -64,7 +71,7 @@ def refresh():
     t = threading.Thread(target=run_spider)
     t.start()
 
-    return "refreshing"
+    return "refreshing..."
     #return get_csvtable()
 
 
