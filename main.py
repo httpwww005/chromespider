@@ -72,7 +72,7 @@ def run_spider():
     crawler = Crawler(spider, get_project_settings())
     dispatcher.connect(reactor.stop, signals.spider_closed)
 
-    crawler.start()
+    crawler.crawl()
     reactor.run()
 	
 
