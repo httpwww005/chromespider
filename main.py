@@ -6,13 +6,13 @@ import os
 
 import scrapy
 from scrapy import signals
-from scrapy import crawler
 from scrapy.utils.project import get_project_settings
 from twisted.internet import reactor
 from khcc.spiders.visitcount import VisitcountSpider
 from scrapy.utils.log import configure_logging
 from scrapy.crawler import CrawlerRunner
 from scrapy.crawler import CrawlerProcess
+from scrapy.crawler import Crawler
 
 from pydispatch import dispatcher
 
@@ -33,10 +33,7 @@ def get_csvtable():
 
         return dataset.html
     else:
-        if( is_refreshing ):
-            return "loading..."
-        else:
-            return "csv_file not available, click above to refresh."
+        return "csv_file not available, click above to refresh."
 
 
 @get('/')
@@ -48,12 +45,11 @@ def index():
 def view():
     return get_csvtable()
 
-is_refreshing = False
 
 #crawler.signals.connect(reactor.stop, signal=signals.spider_closed)
 
 def run_spider():
-    is_refreshing = True
+    #is_refreshing = True
 
     try:
         os.remove(csv_file)
@@ -64,12 +60,21 @@ def run_spider():
     #d = runner.crawl(VisitcountSpider)
     #d.addBoth(lambda _: reactor.stop())
     #reactor.run(installSignalHandlers=False)
-    dispatcher.connect(reactor.stop, signals.spider_closed)
-    process = CrawlerProcess(get_project_settings())
-    process.crawl('visitcount')
-    process.start(stop_after_crawl=False)
-    is_refreshing = False
+    
+    #dispatcher.connect(reactor.stop, signals.spider_closed)
+    #process = CrawlerProcess(get_project_settings())
+    #process.crawl('visitcount')
+    #process.start(stop_after_crawl=False)
+    #is_refreshing = False
 
+
+    spider = VisitcountSpider()
+    crawler = Crawler(get_project_settings())
+    dispatcher.connect(reactor.stop, signals.spider_closed)
+
+    crawler.crawl(spider)
+    crawler.start()
+    reactor.run()
 	
 
 @route('/refresh')
