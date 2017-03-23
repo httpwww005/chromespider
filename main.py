@@ -23,36 +23,24 @@ configure_logging({'LOG_FORMAT': '%(levelname)s: %(message)s'})
 
 
 def get_csvtable():
-    dataset = tablib.Dataset()
-    with open(csv_file) as f:
-    	dataset.csv = f.read()
+    if os.path.isfile(csv_file):
+        dataset = tablib.Dataset()
+        with open(csv_file) as f:
+            dataset.csv = f.read()
 
-    return dataset.html
-
+        return dataset.html
+    else:
+        return "csv_file not available"
 
 
 @get('/')
 def index():
     return template('index',message="csv_file is not available, click above button to fresh!")
 
-@get('/websocket', apply=[websocket])
-def echo(ws):
-    while True:
-        msg = ws.receive()
-        msg = get_csvtable()
-        if msg is not None:
-            ws.send(msg)
-        else: 
-	    break
-
-
 
 @route('/view')
 def view():
-    if os.path.isfile(csv_file):
-        return get_csvtable()
-    else:
-        return "csv_file not available."
+    return get_csvtable()
 
 def run_spider():
     try:
