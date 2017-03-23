@@ -57,10 +57,11 @@ def run_spider(e):
     #process.start(stop_after_crawl=False)
 
 
+e = threading.Event()
+t = threading.Thread(target=run_spider, args=(e,))
+
 @route('/refresh')
 def refresh():
-    e = threading.Event()
-    t = threading.Thread(target=run_spider, args=(e,))
     t.start()
 
     return "loading"
