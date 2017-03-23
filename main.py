@@ -1,5 +1,3 @@
-import threading
-
 from bottle import get, route, run, template
 from bottle.ext.websocket import GeventWebSocketServer
 from bottle.ext.websocket import websocket
@@ -13,17 +11,16 @@ from scrapy import signals
 from scrapy.crawler import Crawler
 from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
-from pydispatch import dispatcher
 from twisted.internet import reactor
 from khcc.spiders.visitcount import VisitcountSpider
 from scrapy.utils.log import configure_logging
 from scrapy.crawler import CrawlerRunner
 
-home = os.environ.get("HOME","/tmp")                 
+home = os.environ.get("HOME","/tmp")
 csv_file = os.path.join(home, "visitcount.csv") 
 
-
 configure_logging({'LOG_FORMAT': '%(levelname)s: %(message)s'})
+
 
 def get_csvtable():
     dataset = tablib.Dataset()
@@ -36,7 +33,7 @@ def get_csvtable():
 
 @get('/')
 def index():
-    return template('index')
+    return template('index',message="this is index")
 
 @get('/websocket', apply=[websocket])
 def echo(ws):
@@ -52,10 +49,12 @@ def echo(ws):
 
 @route('/view')
 def view():
+    if not os.path.isfile(csv_file):
+        run_spider()
+
     return get_csvtable()
 
-
-def run_spider(e):
+def run_spider():
     try:
         os.remove(csv_file)
     except OSError:
@@ -66,13 +65,15 @@ def run_spider(e):
     d.addBoth(lambda _: reactor.stop())
     reactor.run()
 
+@route('/refresh')
+def refresh():
+    run_spider()
+    return get_csvtable()
 
-@route('/go')
-def go():
-    e = threading.Event()
-    t = threading.Thread(target=run_spider, args=(e,))
-    t.start()
-    return "processing"
+@route('/hello')
+def hello():
+    return "hello"
+
 
 port = int(os.environ.get('PORT',5000))
-run(host='0.0.0.0', port=port, debug=True, server=GeventWebSocketServer)
+run(host='0.0.0.0', port=port, debug=True)

@@ -1,46 +1,25 @@
 <!doctype html>
 <head>
     <meta charset="utf-8" />
-    <title>WebSocket Echo Test</title>
+    <title>KHCC visitcount</title>
 
     <style>
         li { list-style: none; }
     </style>
-
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script>
         $(document).ready(function() {
-            if (!window.WebSocket) {
-                if (window.MozWebSocket) {
-                    window.WebSocket = window.MozWebSocket;
-                } else {
-                    $('#messages').append("<li>Your browser doesn't support WebSockets.</li>");
-                }
-            }
-            ws = new WebSocket('ws://0.0.0.0:5000/websocket');
-            ws.onopen = function(evt) {
-                $('#messages').append('<li>WebSocket connection opened.</li>');
-            }
-            ws.onmessage = function(evt) {
-                $('#messages').append('<li>' + evt.data + '</li>');
-            }
-            ws.onclose = function(evt) {
-                $('#messages').append('<li>WebSocket connection closed.</li>');
-            }
-            $('#send').submit(function() {
-                ws.send($('input:first').val());
-                $('input:first').val('').focus();
-                return false;
-            });
+			$("#message").load("/view")
+
+			$("#refresh").click(function(){
+				$("#message").text("Loading...")
+				$("#message").load("/refresh")
+			})
         });
     </script>
 </head>
 <body>
-    <h2>Bottle Websockets!</h2>
-    <form id="send" action='.'>
-        <input type="text" value="message" />
-        <input type="submit" value="Send" />
-    </form>
-    <div id="messages"></div>
+	<button id="refresh">Refresh</button>
+    <div id="message">this is message</div>
 </body>
 </html>
