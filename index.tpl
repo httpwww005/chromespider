@@ -11,8 +11,7 @@
         $(document).ready(function() {
 			$("#message").load("/view")
 			$("#refresh").click(function(){
-				$("#message").text("Loading...")
-				$.ajax('/refresh')
+				$("#message").load("/refresh")
 			})
 			setInterval(function(){
 				$("#message").load("/view")
