@@ -4,6 +4,7 @@ import sys
 from bottle import get, route, run, template
 import os
 import datetime
+from datetime import date
 
 home = os.environ.get("HOME","/tmp")
 csv_file = os.path.join(home, "visitcount.csv") 
@@ -16,6 +17,7 @@ db = client["khcc"]
 collection = db["visitcount"]
 
 header = ["created_on", "location", "address", "count"]
+now = datetime.datetime.now()
 
 
 def get_rows(from_date, to_date):
@@ -33,8 +35,6 @@ def index():
 
     return template('index',header=header,dates=all_dates_list)
 
-now = datetime.datetime.now()
-from datetime import date
 
 @route('/table/<created_on:re:\d{4}-\d{2}-\d{2}>')
 def table(created_on):
