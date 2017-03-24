@@ -3,6 +3,7 @@ import scrapy
 import urlparse
 import re
 import os
+import datetime
 
 class VisitcountSpider(scrapy.Spider):
     name = "visitcount"
@@ -15,6 +16,7 @@ class VisitcountSpider(scrapy.Spider):
         chrome_bin_path = os.environ.get('CHROME_BIN', "")
         webdriver.ChromeOptions.binary_location = chrome_bin_path
         self.driver = webdriver.Chrome()
+        self.utcnow = datetime.datetime.utcnow()
 
     def start_requests(self):
 	urls = [
@@ -24,7 +26,7 @@ class VisitcountSpider(scrapy.Spider):
             'http://khvillages.khcc.gov.tw/home02.aspx?ID=$4011&IDK=2&AP=$4011_SK-^$4011_SK2--1^$4011_PN-2^$4011_HISTORY-0'
 	]
 
-        for url in urls[:1]:
+        for url in urls:
 	    yield scrapy.Request(url=url, callback=self.parse_url, dont_filter=True)
 
 
@@ -73,7 +75,9 @@ class VisitcountSpider(scrapy.Spider):
 
         yield {'location':location,
                 'address':address,
-                'count':count}
+                'count':count,
+                'date':self.utcnow
+                }
 
     def spider_closed(self, spider):
         pass
