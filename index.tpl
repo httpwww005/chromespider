@@ -26,11 +26,7 @@
 			$("#date_select").change(function(){
 				$('#datatable').DataTable().destroy()
 				var url = "/table/"+$(this).val()
-				var data = $.ajax(url)
-				console.log(data)
 				$('#datatable').DataTable({ajax:url});
-				//$('#datatable').DataTable({data:[["d","g","g","1"]]})
-				//$('#datatable').DataTable({data:data[0]})
 			});
 		});
 	</script>
