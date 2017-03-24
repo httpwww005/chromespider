@@ -75,7 +75,7 @@ class VisitcountSpider(scrapy.Spider):
         yield {'location':location,
                 'address':address,
                 'count':count,
-                'date':self.utcnow
+                'created_on':self.utcnow
                 }
 
     def spider_closed(self, spider):
