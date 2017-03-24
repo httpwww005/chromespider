@@ -1,4 +1,5 @@
 from __future__ import print_function
+import json
 import sys
 from bottle import get, route, run, template
 import os
@@ -30,32 +31,19 @@ def index():
     all_dates = list(set(all_dates))
     all_dates_list = sorted([x.strftime("%Y-%m-%d") for x in all_dates])
 
-    to_date = datetime.datetime(now.year, now.month, now.day)
-    from_date = to_date - datetime.timedelta(days=1)
-    rows = get_rows(from_date, to_date)
-
-    return template('index',header=header,dates=all_dates_list,rows=rows)
+    return template('index',header=header,dates=all_dates_list)
 
 now = datetime.datetime.now()
 from datetime import date
 
-@route('/table/<created_on:re:.*>')
+@route('/table/<created_on:re:\d{4}-\d{2}-\d{2}>')
 def table(created_on):
-    
-
-    print("created_on: %s" % created_on, file=sys.stderr)
-
-    if not created_on:
-        from_date = to_date - datetime.timedelta(days=1)
-        to_date = datetime.datetime(now.year, now.month, now.day)
-    else:
-        y,m,d = map(int,created_on.split("-"))
-        from_date = datetime.datetime(y,m,d)
-        to_date = from_date + datetime.timedelta(days=1)
-
+    y,m,d = map(int,created_on.split("-"))
+    from_date = datetime.datetime(y,m,d)
+    to_date = from_date + datetime.timedelta(days=1)
     rows = get_rows(from_date, to_date)
-
-    return template('table',header=header,rows=rows)
+    json_data = {"data":rows}
+    return json.dumps(json_data)
 
 
 port = int(os.environ.get('PORT',5000))

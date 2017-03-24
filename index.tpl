@@ -6,34 +6,63 @@
     <script type="text/javascript" language="javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
 	<script type="text/javascript" charset="utf-8">
+		/*
 		function update_table(){
-			$('#datatable').dataTable(
+			selected_day = $("#date_select").val()
+			var table = $('#datatable').DataTable(
 				{
-					"pageLength":100,
+					"ajax":"/table/"+selected_day
 				}
 			);
-		}
+			return table
+		}*/
 
 		$(document).ready(function() {
+			var selected_day = $("#date_select").val()
+			var url = "/table/"+selected_day
+			var data = $.ajax(url)
+			$('#datatable').DataTable({ajax:url});
+			
 			$("#date_select").change(function(){
-				$("#datatable").load("/table/"+$(this).val())
+				$('#datatable').DataTable().destroy()
+				var url = "/table/"+$(this).val()
+				var data = $.ajax(url)
+				console.log(data)
+				$('#datatable').DataTable({ajax:url});
+				//$('#datatable').DataTable({data:[["d","g","g","1"]]})
+				//$('#datatable').DataTable({data:data[0]})
 			});
-			update_table()
-		} );
+		});
 	</script>
 
 </head>
 <body>
 	<div class="container">
 		<select id="date_select">
-			%for date in dates:
+			%for date in dates[:-1]:
   			<option value="{{date}}">{{date}}</option>
 			%end
+  			<option value="{{dates[-1]}}" selected="selected">{{dates[-1]}}</option>
 		</select>
 		<p/>
 		<br/>
 		<table id="datatable" class="display">
-			% include('table.tpl')
+			<thead>
+				  <tr>
+				  %for col in header:
+					<td>{{col}}</td>
+				  %end
+				  </tr>
+			</thead>
+			<tfoot>
+				  <tr>
+				  %for col in header:
+					<td>{{col}}</td>
+				  %end
+				  </tr>
+			</tfoot>
+			<tbody>
+			</tbody>
 		</table>
 	</div>
 </body>
