@@ -39,7 +39,6 @@ class VisitcountSpider(scrapy.Spider):
         self.logger.debug('subject: %s' % subject)
 
         if u"建物簡介" in subject:
-            self.logger.debug("x")
             ax = response.xpath("//a")
             for a in ax:
                 try:
