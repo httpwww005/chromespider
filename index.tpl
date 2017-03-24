@@ -20,7 +20,6 @@
 		$(document).ready(function() {
 			var selected_day = $("#date_select").val()
 			var url = "/table/"+selected_day
-			var data = $.ajax(url)
 			$('#datatable').DataTable({ajax:url});
 			
 			$("#date_select").change(function(){
