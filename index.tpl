@@ -20,12 +20,12 @@
 		$(document).ready(function() {
 			var selected_day = $("#date_select").val()
 			var url = "/table/"+selected_day
-			$('#datatable').DataTable({ajax:url});
+			$('#datatable').DataTable({ajax:url,pageLength:100});
 			
 			$("#date_select").change(function(){
 				$('#datatable').DataTable().destroy()
 				var url = "/table/"+$(this).val()
-				$('#datatable').DataTable({ajax:url});
+				$('#datatable').DataTable({ajax:url,pageLength:100});
 			});
 		});
 	</script>
