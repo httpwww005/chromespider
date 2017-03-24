@@ -1,4 +1,7 @@
+from __future__ import print_function
 from bottle import get, route, run, template
+
+import logging
 
 import tablib
 import csv
@@ -24,6 +27,8 @@ csv_file = os.path.join(home, "visitcount.csv")
 
 configure_logging({'LOG_FORMAT': '%(levelname)s: %(message)s'})
 
+
+logger = logging.getLogger()
 
 def get_csvtable():
     if os.path.isfile(csv_file):
@@ -57,13 +62,13 @@ def run_spider():
         pass
 
     #runner = CrawlerRunner(get_project_settings())
-    #d = runner.crawl(VisitcountSpider)
+    #runner.crawl(VisitcountSpider)
     #d.addBoth(lambda _: reactor.stop())
     #reactor.run(installSignalHandlers=True)
     #dispatcher.connect(reactor.stop, signals.spider_closed)
-    process = CrawlerProcess(get_project_settings())
-    process.crawl('visitcount')
-    process.start(stop_after_crawl=True)
+    #process = CrawlerProcess(get_project_settings())
+    #process.crawl('visitcount')
+    #process.start(stop_after_crawl=True)
     #is_refreshing = False
 
 
@@ -75,13 +80,40 @@ def run_spider():
     #    reactor.run()
     #	
 
+def spider_stop():
+    logger.debug("spider_stop")
+    reactor.callFromThread(reactor.stop)
+
+@route('/stop')
+def stop():
+    #reactor.stop()
+    reactor.run()
+    
+#d = crawler.crawl()
+#d.addBoth(lambda _: reactor.callFromThread(reactor.stop))
+
 @route('/refresh')
 def refresh():
-    e = threading.Event()
-    t = threading.Thread(target=run_spider)
-    t.start()
-    return "refreshing..."
+    try:
+        os.remove(csv_file)
+    except OSError:
+        pass
+	
+    crawler = Crawler(VisitcountSpider)
+    crawler.crawl()
+
+
+#d.addBoth(lambda _: reactor.callFromThread(reactor.stop))
+    #crawler.start()
+    #process = CrawlerProcess(get_project_settings())
+    #process.crawl('visitcount')
+    #process.start(stop_after_crawl=True)
+    #e = threading.Event()
+    #t = threading.Thread(target=run_spider)
+    #t.start()
+    #return "refreshing..."
     #return get_csvtable()
+    return ""
 
 
 @route('/hello')

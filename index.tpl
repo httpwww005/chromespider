@@ -10,8 +10,12 @@
     <script>
         $(document).ready(function() {
 			$("#message").load("/view")
+			$("#stop").click(function(){
+				$.ajax("/stop")
+			})
 			$("#refresh").click(function(){
-				$("#message").load("/refresh")
+				$("#message").text("refreshing...")
+				$.ajax("/refresh")
 			})
 			setInterval(function(){
 				$("#message").load("/view")
@@ -21,6 +25,7 @@
 </head>
 <body>
 	<button id="refresh">Refresh</button>
+	<button id="stop">stop</button>
     <div id="message">{{get("message","csv_file not available")}}</div>
 </body>
 </html>

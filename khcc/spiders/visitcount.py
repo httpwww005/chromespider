@@ -24,7 +24,7 @@ class VisitcountSpider(scrapy.Spider):
             'http://khvillages.khcc.gov.tw/home02.aspx?ID=$4011&IDK=2&AP=$4011_SK-^$4011_SK2--1^$4011_PN-2^$4011_HISTORY-0'
 	]
 
-        for url in urls:
+        for url in urls[:1]:
 	    yield scrapy.Request(url=url, callback=self.parse_url, dont_filter=True)
 
 
