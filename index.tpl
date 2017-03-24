@@ -10,24 +10,15 @@
 			$('#datatable').dataTable(
 				{
 					"pageLength":100,
-					"columnDefs": [{
-						"render": function ( data, type, row ) {
-							return data.slice(0,10)
-						},
-						"targets": 1
-					},
-					{ "visible": false,  "targets": [0] }
-					]
 				}
 			);
 		}
 
 		$(document).ready(function() {
 			$("#date_select").change(function(){
-				update_table()
 				$("#datatable").load("/table/"+$(this).val())
-				//$('#datatable').DataTable().ajax.reload();
 			});
+			update_table()
 		} );
 	</script>
 

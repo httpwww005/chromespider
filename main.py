@@ -14,15 +14,14 @@ client = pymongo.MongoClient(MONGODB_URI)
 db = client["khcc"]
 collection = db["visitcount"]
 
-header = ["_id", "created_on", "location", "address", "count"]
+header = ["created_on", "location", "address", "count"]
 
-def sort_rows(data):
-    return [[x["_id"], x["created_on"], x["location"], x["address"], x["count"]] for x in data]
 
 def get_rows(from_date, to_date):
     data = collection.find({"created_on":{"$gte":from_date,"$lt":to_date}})
-    rows = sort_rows(data)
+    rows = [[str(x["created_on"])[0:10], x["location"], x["address"], x["count"]] for x in data]
     return rows
+
 
 @get('/')
 def index():
