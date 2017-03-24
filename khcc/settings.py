@@ -9,6 +9,8 @@
 #     http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 #     http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
 
+import os
+
 BOT_NAME = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.11 (KHTML, like Gecko) Ubuntu/11.10 Chromium/27.0.1453.93 Chrome/27.0.1453.93 Safari/537.36'
 
 SPIDER_MODULES = ['khcc.spiders']
@@ -64,9 +66,11 @@ ROBOTSTXT_OBEY = True
 
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
-ITEM_PIPELINES = {
-    'khcc.pipelines.KhccPipeline': 300,
-}
+ITEM_PIPELINES = {'scrapy_mongodb.MongoDBPipeline':300}
+db_uri = os.environ["MONGODB_URI"]
+MONGODB_URI = db_uri
+MONGODB_DATABASE = 'khcc'
+MONGODB_COLLECTION = 'visitcount'
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html
@@ -90,7 +94,6 @@ ITEM_PIPELINES = {
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
 FEED_FORMAT="csv"
-import os
 home=os.environ.get("HOME","/tmp")
 csv=os.path.join(home, "visitcount.csv")
 FEED_URI="file://%s" % csv

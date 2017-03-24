@@ -6,7 +6,3 @@
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 
 
-class KhccPipeline(object):
-    def process_item(self, item, spider):
-        #spider.logger.debug(item)
-        return item
