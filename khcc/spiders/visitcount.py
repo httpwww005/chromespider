@@ -4,6 +4,7 @@ import urlparse
 import re
 import os
 import datetime
+from scrapy.utils.project import get_project_settings
 
 class VisitcountSpider(scrapy.Spider):
     name = "visitcount"
@@ -12,11 +13,17 @@ class VisitcountSpider(scrapy.Spider):
     url_base = "http://khvillages.khcc.gov.tw/"
 
     def __init__(self):
-        from selenium import webdriver
-        chrome_bin_path = os.environ.get('CHROME_BIN', "")
-        webdriver.ChromeOptions.binary_location = chrome_bin_path
-        self.driver = webdriver.Chrome()
         self.utcnow = datetime.datetime.utcnow()
+
+	settings = get_project_settings()
+        self.is_chromespider = settings.get("CHROME_SPIDER",False)
+
+        if self.is_chromespider:
+            from selenium import webdriver
+            chrome_bin_path = os.environ.get('CHROME_BIN', "")
+            webdriver.ChromeOptions.binary_location = chrome_bin_path
+            self.driver = webdriver.Chrome()
+
 
     def start_requests(self):
 	urls = [
@@ -27,7 +34,21 @@ class VisitcountSpider(scrapy.Spider):
 	]
 
         for url in urls:
-	    yield scrapy.Request(url=url, callback=self.parse_url, dont_filter=True)
+            if self.is_chromespider:
+                self.driver.get(url)
+                yield scrapy.Request(url=url, callback=self.parse_url_chrome, dont_filter=True)
+            else:
+                yield scrapy.Request(url=url, callback=self.parse_url, dont_filter=True)
+
+    def parse_url_chrome(self, response):
+        ax = self.driver.find_elements_by_xpath("//a")
+
+        for a in ax:
+            url = a.get_attribute("href")
+            if not url:
+                continue
+            if("DATA=" in url) and ("_HISTORY-" in url):
+                yield scrapy.Request(url=url, callback=self.parse, dont_filter=True)
 
 
     def parse_url(self, response):

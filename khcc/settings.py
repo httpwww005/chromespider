@@ -70,7 +70,7 @@ ITEM_PIPELINES = {'scrapy_mongodb.MongoDBPipeline':300}
 db_uri = os.environ["MONGODB_URI"]
 MONGODB_URI = db_uri
 MONGODB_DATABASE = 'khcc'
-MONGODB_COLLECTION = 'visitcount'
+MONGODB_COLLECTION = 'visitcount_test2'
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html
@@ -97,3 +97,6 @@ FEED_FORMAT="csv"
 home=os.environ.get("HOME","/tmp")
 csv=os.path.join(home, "visitcount.csv")
 FEED_URI="file://%s" % csv
+
+
+CHROME_SPIDER=True # True or False
