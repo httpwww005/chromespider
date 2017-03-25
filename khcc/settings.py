@@ -70,7 +70,7 @@ ITEM_PIPELINES = {'scrapy_mongodb.MongoDBPipeline':300}
 db_uri = os.environ["MONGODB_URI"]
 MONGODB_URI = db_uri
 MONGODB_DATABASE = 'khcc'
-MONGODB_COLLECTION = 'visitcount_test2'
+MONGODB_COLLECTION = 'visitcount'
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html
