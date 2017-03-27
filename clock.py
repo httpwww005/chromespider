@@ -21,10 +21,11 @@ def get_next_run_time(is_refresh_run):
     minute=random.randint(minute_start,minute_end)
 
     if( is_refresh_run ):
-        year = now.year
-        month = now.month
-        day = now.day
-        next_run_time_ = datetime(year,month,day,hour,minute,tzinfo=TZ)
+        #year = now.year
+        #month = now.month
+        #day = now.day
+        #next_run_time_ = datetime(year,month,day,hour,minute,tzinfo=TZ)
+        next_run_time_ = now
     else:
         start_time = datetime(now.year,now.month,now.day,hour_start,minute_start,tzinfo=TZ)
         end_time = datetime(now.year,now.month,now.day,hour_end,minute_end,tzinfo=TZ)
@@ -33,7 +34,7 @@ def get_next_run_time(is_refresh_run):
         print("start_time: %s" % start_time)
         print("end_time: %s" % end_time)
         if start_time <= next_run_time <= end_time:
-            next_run_time_ = now + timedelta(minutes=in_between_delay_minute)
+            next_run_time_ = next_run_time + timedelta(minutes=in_between_delay_minute)
         elif next_run_time < start_time:
             next_run_time_ = next_run_time
         else:
@@ -41,7 +42,6 @@ def get_next_run_time(is_refresh_run):
             next_run_time_ = next_run_time_.replace(hour=hour,minute=minute)
 
     return next_run_time_
-
 
 
 hour_start = 2
