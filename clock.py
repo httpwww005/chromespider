@@ -26,9 +26,9 @@ def scheduled_job():
 sched.start()
 
 while True:
-    jobs = sched.get_jobs()
-    print jobs
     print "<<<<<"
+    print sched.get_jobs()
+
     if( len(jobs) < 1 ):
         sched.shutdown()
         now = datetime.now()
@@ -44,8 +44,7 @@ while True:
         sched.start()
         #scheduler.reschedule_job('scrapy_job', trigger='cron', hour=hour, minute=minute)
         print "2<<<<<"
-        jobs = sched.get_jobs()
-        print jobs
+        print sched.get_jobs()
     
     total_sleep = timedelta(seconds=(check_period_hr*60*60 - scrapy_time*60))
     print("sleep now for: %s" % str(total_sleep))
