@@ -98,5 +98,9 @@ home=os.environ.get("HOME","/tmp")
 csv=os.path.join(home, "visitcount.csv")
 FEED_URI="file://%s" % csv
 
-
 CHROME_SPIDER=True # True or False
+
+DOWNLOADER_MIDDLEWARES = {
+    'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
+    'scrapy_fake_useragent.middleware.RandomUserAgentMiddleware': 400,
+}
