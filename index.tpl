@@ -17,12 +17,13 @@
 			}
 
 			$("#date_select").change(function(){
-				var url = "/table/"+$(this).val()
-				if( url != null ) {
+				var selected_day = $("#date_select").val()
+				if( selected_day != null ) {
+					var url = "/table/"+$(this).selected_day
 					$('#datatable').DataTable().destroy()
 					$('#datatable').DataTable({ajax:url,pageLength:100});
 				}
-			});
+			})
 		});
 	</script>
 
