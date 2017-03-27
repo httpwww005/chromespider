@@ -21,10 +21,6 @@ def get_next_run_time(is_refresh_run):
     minute=random.randint(minute_start,minute_end)
 
     if( is_refresh_run ):
-        #year = now.year
-        #month = now.month
-        #day = now.day
-        #next_run_time_ = datetime(year,month,day,hour,minute,tzinfo=TZ)
         next_run_time_ = now
     else:
         start_time = datetime(now.year,now.month,now.day,hour_start,minute_start,tzinfo=TZ)
