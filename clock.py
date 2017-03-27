@@ -29,9 +29,9 @@ def get_next_run_time(is_refresh_run):
         start_time = datetime(now.year,now.month,now.day,hour_start,minute_start,tzinfo=TZ)
         end_time = datetime(now.year,now.month,now.day,hour_end,minute_end,tzinfo=TZ)
 
-        if start_time <= now <= end_time:
+        if start_time <= next_run_time <= end_time:
             next_run_time_ = now + timedelta(minutes=in_between_delay_minute)
-        elif now < start_time:
+        elif next_run_time < start_time:
             next_run_time_ = next_run_time
         else:
             next_run_time_ = next_run_time + timedelta(days=1)
