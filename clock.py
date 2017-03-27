@@ -60,7 +60,7 @@ while True:
         print "new job scheduled at time: %s" % job.next_run_time
     
     now = datetime.now(TZ)
-    time_diff = job.next_run_time - now
+    time_diff = job.next_run_time + timedelta(hours=20) 
     total_sleep = time_diff.total_seconds() + scrapy_time * 60
-    print("sleep now for: %s" % str(timedelta(seconds=total_sleep)))
+    print("next check time: %s" % time_diff)
     sleep(total_sleep)
