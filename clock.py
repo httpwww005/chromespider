@@ -40,6 +40,7 @@ def get_next_run_time(is_refresh_run):
     return next_run_time_
 
 
+
 hour_start = 2
 hour_end = 5
 minute_start = 0
