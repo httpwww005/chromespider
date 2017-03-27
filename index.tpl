@@ -12,6 +12,8 @@
 			if( selected_day != null ) {
 				var url = "/table/"+selected_day
 				$('#datatable').DataTable({ajax:url,pageLength:100});
+			} else {
+				$('#datatable').DataTable()
 			}
 
 			$("#date_select").change(function(){
