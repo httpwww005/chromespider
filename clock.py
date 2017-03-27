@@ -9,17 +9,21 @@ from datetime import timedelta
 #sched = BlockingScheduler()
 sched = BackgroundScheduler()
 
-sched.start()
 
 check_period_hr = 20 # hr
 scrapy_time     = 5  # minute
 
-#@sched.scheduled_job('cron', hour=hour, minute=minute)
+job_id="scrapy_job"
+
+@sched.scheduled_job('cron', id="scrapy_job", shour=3, minute=55)
 def scheduled_job():
     cmd = "scrapy crawl visitcount"
+    cmd = "ls"
     print('Late night crawler is running: %s' % cmd)
     subprocess.Popen(cmd, shell=True)
     #sleep(check_period_hr*60*60 - 5*60)
+
+sched.start()
 
 while True:
     jobs = sched.get_jobs()
@@ -35,7 +39,8 @@ while True:
         
         next_run_time = datetime(year,month,day,hour,minute)
             
-        sched.add_job(scheduled_job, next_run_time=next_run_time)
+        job = sched.add_job(scheduled_job,id="scrapy_job",next_run_time=next_run_time)
+        #scheduler.reschedule_job('scrapy_job', trigger='cron', hour=hour, minute=minute)
         print "2<<<<<"
         jobs = sched.get_jobs()
         print jobs
