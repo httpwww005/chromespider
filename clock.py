@@ -30,6 +30,7 @@ while True:
     print jobs
     print "<<<<<"
     if( len(jobs) < 1 ):
+        sched.pause()
         now = datetime.now()
         year = now.year
         month = now.month
@@ -40,6 +41,7 @@ while True:
         next_run_time = datetime(year,month,day,hour,minute)
             
         job = sched.add_job(scheduled_job,id="scrapy_job",next_run_time=next_run_time)
+        sched.resume()
         #scheduler.reschedule_job('scrapy_job', trigger='cron', hour=hour, minute=minute)
         print "2<<<<<"
         jobs = sched.get_jobs()
