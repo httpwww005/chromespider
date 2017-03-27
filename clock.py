@@ -4,11 +4,15 @@ import random
 
 sched = BlockingScheduler()
 
-#@sched.scheduled_job('cron', hour=random.randint(2,6), minute=random.randint(0,60))
-@sched.scheduled_job('cron', hour=10, minute=23)
+hour=random.randint(2,6)
+minute=random.randint(0,60)
+
+@sched.scheduled_job('cron', hour=hour, minute=minute)
 def scheduled_job():
     cmd = "scrapy crawl visitcount"
     print('Late night crawler is running: %s' % cmd)
+    jobs = sched.get_jobs()
+    print(jobs)
     subprocess.Popen(cmd, shell=True)
 
 sched.start()
