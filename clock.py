@@ -15,7 +15,7 @@ scrapy_time     = 5  # minute
 
 job_id="scrapy_job"
 
-@sched.scheduled_job('cron', id="scrapy_job", shour=3, minute=55)
+@sched.scheduled_job('cron', id="scrapy_job", hour=3, minute=55)
 def scheduled_job():
     cmd = "scrapy crawl visitcount"
     cmd = "ls"
