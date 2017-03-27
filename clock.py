@@ -23,6 +23,7 @@ def scheduled_job():
 
 while True:
     jobs = sched.get_jobs()
+    print jobs
 
     if( len(jobs) < 1 ):
         now = datetime.now()
