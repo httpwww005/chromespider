@@ -44,6 +44,7 @@ minute_start = 0
 minute_end = 59
 in_between_delay_minute = 5
 scrapy_time = 30 # minute
+next_check_hours = 20
 
 TZ=pytz.timezone("Asia/Taipei")
 next_run_time = get_next_run_time(True)
@@ -60,7 +61,7 @@ while True:
         print "new job scheduled at time: %s" % job.next_run_time
     
     now = datetime.now(TZ)
-    time_diff = job.next_run_time + timedelta(hours=20) 
-    total_sleep = time_diff.total_seconds() + scrapy_time * 60
+    time_diff = job.next_run_time + timedelta(hours=next_check_hours) 
+    sleep_seconds = next_check_hours * 60 * 60
     print("next check time: %s" % time_diff)
-    sleep(total_sleep)
+    sleep(sleep_seconds)
