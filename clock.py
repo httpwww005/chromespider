@@ -11,8 +11,9 @@ minute=random.randint(0,60)
 def scheduled_job():
     cmd = "scrapy crawl visitcount"
     print('Late night crawler is running: %s' % cmd)
-    jobs = sched.get_jobs()
-    print(jobs)
     subprocess.Popen(cmd, shell=True)
 
 sched.start()
+
+jobs = sched.get_jobs()
+print(jobs)
