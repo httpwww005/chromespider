@@ -40,6 +40,8 @@ def get_next_run_time(is_refresh_run):
             next_run_time_ = next_run_time + timedelta(days=1)
             next_run_time_ = next_run_time_.replace(hour=hour,minute=minute)
 
+
+    next_run_time = next_run_time_
     return next_run_time_
 
 
