@@ -32,7 +32,6 @@ def get_next_run_time(is_refresh_run):
 sched = BackgroundScheduler()
 next_run_time = get_next_run_time(True)
 
-check_period_hr = 20 # hr
 scrapy_time     = 10 # minute
 
 
@@ -47,7 +46,7 @@ while True:
         print "new job scheduled at time: %s" % job.next_run_time
     
     now = datetime.now()
-    time_diff = next_run_time - now
-    total_sleep = time_diff.total_seconds()
+    time_diff = job.next_run_time - now
+    total_sleep = time_diff.total_seconds() + scrapy_time * 60
     print("sleep now for: %s" % str(timedelta(seconds=total_sleep)))
     sleep(total_sleep)
