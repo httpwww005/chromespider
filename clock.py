@@ -45,7 +45,6 @@ while True:
     jobs=sched.get_jobs()
 
     if( len(jobs) < 1 ):
-        next_run_time = get_next_run_time()
         job = sched.add_job(scheduled_job,id="scrapy_job",next_run_time=get_next_run_time(False))
         print "new job scheduled at time: %s" % job.next_run_time
     
