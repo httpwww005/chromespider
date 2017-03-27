@@ -23,27 +23,24 @@ def scheduled_job():
     subprocess.Popen(cmd, shell=True)
     #sleep(check_period_hr*60*60 - 5*60)
 
+sched.start()
+
 while True:
-    print "<<<<<"
     jobs=sched.get_jobs()
-    print jobs
 
     if( len(jobs) < 1 ):
-        sched.shutdown()
         now = datetime.now()
         year = now.year
         month = now.month
         day = now.day
-        hour=random.randint(2,6)
+        hour=random.randint(18,20)
         minute=random.randint(0,59)
         
         next_run_time = datetime(year,month,day,hour,minute)
             
         job = sched.add_job(scheduled_job,id="scrapy_job",next_run_time=next_run_time)
-        sched.start()
         #scheduler.reschedule_job('scrapy_job', trigger='cron', hour=hour, minute=minute)
-        print "2<<<<<"
-        print sched.get_jobs()
+        print "new job scheduled at time: %s" % job.next_run_time
     
     total_sleep = timedelta(seconds=(check_period_hr*60*60 - scrapy_time*60))
     print("sleep now for: %s" % str(total_sleep))
