@@ -36,7 +36,7 @@ while True:
         month = now.month
         day = now.day
         hour=random.randint(2,6)
-        minute=random.randint(0,60)
+        minute=random.randint(0,59)
         
         next_run_time = datetime(year,month,day,hour,minute)
             
