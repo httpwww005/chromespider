@@ -16,15 +16,15 @@ def scheduled_job():
 
 
 def get_next_run_time(is_refresh_run):
-    now = datetime.now(TZ)
-    hour=random.randint(hour_start,hour_end)
-    minute=random.randint(minute_start,minute_end)
 
     if( is_refresh_run ):
-        next_run_time_ = now
+        next_run_time_ = datetime.now(TZ)
     else:
-        start_time = datetime(now.year,now.month,now.day,hour_start,minute_start,tzinfo=TZ)
-        end_time = datetime(now.year,now.month,now.day,hour_end,minute_end,tzinfo=TZ)
+        hour=random.randint(hour_start,hour_end)
+        minute=random.randint(minute_start,minute_end)
+
+        start_time = datetime(next_run_time.year,next_run_time.month,next_run_time_.day,hour_start,minute_start,tzinfo=TZ)
+        end_time = start_time.replace(hour=hour_end, minute=minute_end)
     
         print("next_run_time: %s" % next_run_time)
         print("start_time: %s" % start_time)
