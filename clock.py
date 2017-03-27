@@ -46,6 +46,8 @@ while True:
         job = sched.add_job(scheduled_job, next_run_time=get_next_run_time(False))
         print "new job scheduled at time: %s" % job.next_run_time
     
-    total_sleep = timedelta(seconds=(check_period_hr*60*60 - scrapy_time*60))
-    print("sleep now for: %s" % str(total_sleep))
-    sleep(check_period_hr*60*60 - 5*60)
+    now = datetime.now()
+    time_diff = next_run_time - now
+    total_sleep = time_diff.total_seconds()
+    print("sleep now for: %s" % str(timedelta(seconds=total_sleep)))
+    sleep(total_sleep)
