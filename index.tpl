@@ -9,13 +9,17 @@
 	
 		$(document).ready(function() {
 			var selected_day = $("#date_select").val()
-			var url = "/table/"+selected_day
-			$('#datatable').DataTable({ajax:url,pageLength:100});
-			
-			$("#date_select").change(function(){
-				$('#datatable').DataTable().destroy()
-				var url = "/table/"+$(this).val()
+			if( selected_day != null ) {
+				var url = "/table/"+selected_day
 				$('#datatable').DataTable({ajax:url,pageLength:100});
+			}
+
+			$("#date_select").change(function(){
+				var url = "/table/"+$(this).val()
+				if( url != null ) {
+					$('#datatable').DataTable().destroy()
+					$('#datatable').DataTable({ajax:url,pageLength:100});
+				}
 			});
 		});
 	</script>
