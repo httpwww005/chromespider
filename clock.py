@@ -15,8 +15,8 @@ def scheduled_job():
 
 def get_next_run_time(is_refresh_run):
     now = datetime.now(TZ)
-    hour=random.randint(2,6)
-    minute=random.randint(0,59)
+    hour=random.randint(hour_start,hour_end)
+    minute=random.randint(minute_start,minute_end)
 
     if( is_refresh_run ):
         year = now.year
@@ -24,18 +24,31 @@ def get_next_run_time(is_refresh_run):
         day = now.day
         next_run_time_ = datetime(year,month,day,hour,minute)
     else:
-        next_run_time_ = next_run_time + timedelta(days=1)
-        next_run_time_ = next_run_time_.replace(hour=hour,minute=minute)
+        start_time = datetime(now.year,now.month,now.day,hour_start,minute_start)
+        end_time = datetime(now.year,now.month,now.day,hour_end,minute_end)
+
+        if start_time <= now <= end_time:
+            next_run_time_ = next_run_time + timedelta(minutes=in_between_delay_minute)
+        elif now < start_time:
+            next_run_time_ = next_run_time
+        else:
+            next_run_time_ = next_run_time + timedelta(days=1)
+            next_run_time_ = next_run_time_.replace(hour=hour,minute=minute)
 
     return next_run_time_
 
+
+hour_start = 2
+hour_end = 5
+minute_start = 0
+minute_end = 59
+in_between_delay_minute = 5
+scrapy_time = 30 # minute
+
 TZ=pytz.timezone("Asia/Taipei")
-sched = BackgroundScheduler(timezone=TZ)
 next_run_time = get_next_run_time(True)
 
-scrapy_time     = 10 # minute
-
-
+sched = BackgroundScheduler(timezone=TZ)
 sched.start()
 
 
