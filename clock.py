@@ -32,7 +32,7 @@ while True:
         hour=random.randint(2,6)
         minute=random.randint(0,60)
         
-        next_run_time = datetime(year,month,day,minute,hour)
+        next_run_time = datetime(year,month,day,hour,minute)
             
         job = sched.add_job(scheduled_job, next_run_time=next_run_time)
         print("job added: %s" % job)
