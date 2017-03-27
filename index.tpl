@@ -24,10 +24,12 @@
 <body>
 	<div class="container">
 		<select id="date_select">
-			%for date in dates[:-1]:
-  			<option value="{{date}}">{{date}}</option>
-			%end
-  			<option value="{{dates[-1]}}" selected="selected">{{dates[-1]}}</option>
+			% if len(dates) > 0:
+				%for date in dates[:-1]:
+				<option value="{{date}}">{{date}}</option>
+				%end
+				<option value="{{dates[-1]}}" selected="selected">{{dates[-1]}}</option>
+			% end
 		</select>
 		<p/>
 		<br/>

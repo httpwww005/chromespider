@@ -17,7 +17,6 @@ db = client["khcc"]
 collection = db["visitcount"]
 
 header = ["created_on", "location", "address", "count"]
-now = datetime.datetime.now()
 
 
 def get_rows(from_date, to_date):
@@ -29,13 +28,9 @@ def get_rows(from_date, to_date):
 @get('/')
 def index():
     all_dates_ = list(collection.find({},{"created_on":1}).distinct("created_on"))
-
-    if(len(all_dates_)>0):
-        all_dates = [date(year=x.year, month=x.month, day=x.day) for x in all_dates_]
-        all_dates = list(set(all_dates))
-        all_dates_list = sorted([x.strftime("%Y-%m-%d") for x in all_dates])
-    else:
-        all_dates_list = []
+    all_dates = [date(year=x.year, month=x.month, day=x.day) for x in all_dates_]
+    all_dates = list(set(all_dates))
+    all_dates_list = sorted([x.strftime("%Y-%m-%d") for x in all_dates])
 
     return template('index',header=header,dates=all_dates_list)
 
