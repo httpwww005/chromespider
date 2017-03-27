@@ -27,7 +27,8 @@ sched.start()
 
 while True:
     print "<<<<<"
-    print sched.get_jobs()
+    print jobs
+    jobs=sched.get_jobs()
 
     if( len(jobs) < 1 ):
         sched.shutdown()
