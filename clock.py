@@ -23,7 +23,7 @@ def get_next_run_time(is_refresh_run):
         hour=random.randint(hour_start,hour_end)
         minute=random.randint(minute_start,minute_end)
 
-        start_time = datetime(next_run_time.year,next_run_time.month,next_run_time_.day,hour_start,minute_start,tzinfo=TZ)
+        start_time = datetime(next_run_time.year,next_run_time.month,next_run_time.day,hour_start,minute_start,tzinfo=TZ)
         end_time = start_time.replace(hour=hour_end, minute=minute_end)
     
         print("next_run_time: %s" % next_run_time)
