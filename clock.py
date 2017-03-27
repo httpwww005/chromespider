@@ -34,10 +34,13 @@ def get_next_run_time(is_refresh_run):
         print("start_time: %s" % start_time)
         print("end_time: %s" % end_time)
         if start_time <= next_run_time <= end_time:
+            print("next_run_time in between")
             next_run_time_ = next_run_time + timedelta(minutes=in_between_delay_minute)
         elif next_run_time < start_time:
+            print("next_run_time < start_time")
             next_run_time_ = next_run_time.replace(hour=hour,minute=minute)
         else:
+            print("next_run_time > end_time")
             next_run_time_ = next_run_time + timedelta(days=1)
             next_run_time_ = next_run_time_.replace(hour=hour,minute=minute)
 
