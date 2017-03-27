@@ -29,9 +29,13 @@ def get_rows(from_date, to_date):
 @get('/')
 def index():
     all_dates_ = list(collection.find({},{"created_on":1}).distinct("created_on"))
-    all_dates = [date(year=x.year, month=x.month, day=x.day) for x in all_dates_]
-    all_dates = list(set(all_dates))
-    all_dates_list = sorted([x.strftime("%Y-%m-%d") for x in all_dates])
+
+    if(len(all_dates_)>0):
+        all_dates = [date(year=x.year, month=x.month, day=x.day) for x in all_dates_]
+        all_dates = list(set(all_dates))
+        all_dates_list = sorted([x.strftime("%Y-%m-%d") for x in all_dates])
+    else:
+        all_dates_list = []
 
     return template('index',header=header,dates=all_dates_list)
 
