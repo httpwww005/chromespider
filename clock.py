@@ -39,14 +39,14 @@ def get_next_run_time(is_refresh_run):
 
 sched.start()
 
-next_run_time = get_next_run_time()
+next_run_time = get_next_run_time(True)
 
 while True:
     jobs=sched.get_jobs()
 
     if( len(jobs) < 1 ):
         next_run_time = get_next_run_time()
-        job = sched.add_job(scheduled_job,id="scrapy_job",next_run_time=get_next_run_time())
+        job = sched.add_job(scheduled_job,id="scrapy_job",next_run_time=get_next_run_time(False))
         print "new job scheduled at time: %s" % job.next_run_time
     
     total_sleep = timedelta(seconds=(check_period_hr*60*60 - scrapy_time*60))
