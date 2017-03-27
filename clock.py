@@ -13,8 +13,8 @@ def scheduled_job():
     print('Late night crawler is running: %s' % cmd)
     subprocess.Popen(cmd, shell=True)
 
-sched.start()
 
 jobs = sched.get_jobs()
 print(jobs)
 print "xxxxxxxxxxxxx"
+sched.start()
