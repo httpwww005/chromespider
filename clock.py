@@ -24,7 +24,7 @@ def scheduled_job():
 while True:
     jobs = sched.get_jobs()
     print jobs
-
+    print "<<<<<"
     if( len(jobs) < 1 ):
         now = datetime.now()
         year = now.year
@@ -35,8 +35,10 @@ while True:
         
         next_run_time = datetime(year,month,day,hour,minute)
             
-        job = sched.add_job(scheduled_job, next_run_time=next_run_time)
-        print("job added: %s" % job)
+        sched.add_job(scheduled_job, next_run_time=next_run_time)
+        print "2<<<<<"
+        jobs = sched.get_jobs()
+        print jobs
     
     total_sleep = timedelta(seconds=(check_period_hr*60*60 - scrapy_time*60))
     print("sleep now for: %s" % str(total_sleep))
