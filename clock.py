@@ -5,6 +5,8 @@ from time import sleep
 from datetime import datetime
 from datetime import timedelta 
 import pytz
+import logging
+logging.basicConfig()
 
 
 def scheduled_job():
@@ -28,7 +30,7 @@ def get_next_run_time(is_refresh_run):
         end_time = datetime(now.year,now.month,now.day,hour_end,minute_end,tzinfo=TZ)
 
         if start_time <= now <= end_time:
-            next_run_time_ = next_run_time + timedelta(minutes=in_between_delay_minute)
+            next_run_time_ = now + timedelta(minutes=in_between_delay_minute)
         elif now < start_time:
             next_run_time_ = next_run_time
         else:
