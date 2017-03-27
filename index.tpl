@@ -6,20 +6,26 @@
     <script type="text/javascript" language="javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
 	<script type="text/javascript" charset="utf-8">
+		function get_url() {
+			var selected_day = $("#date_select").val()
+			if( selected_day == null ) {
+				return null
+			} else {
+				return "/table/"+selected_day
+			}
+		}
 	
 		$(document).ready(function() {
-			var selected_day = $("#date_select").val()
-			if( selected_day != null ) {
-				var url = "/table/"+selected_day
-				$('#datatable').DataTable({ajax:url,pageLength:100});
-			} else {
+			var url = get_url()
+			if( url == null ) {
 				$('#datatable').DataTable()
+			} else {
+				$('#datatable').DataTable({ajax:url,pageLength:100});
 			}
 
 			$("#date_select").change(function(){
-				var selected_day = $("#date_select").val()
-				if( selected_day != null ) {
-					var url = "/table/"+$(this).selected_day
+				var url = get_url()
+				if( url != null ) {
 					$('#datatable').DataTable().destroy()
 					$('#datatable').DataTable({ajax:url,pageLength:100});
 				}
