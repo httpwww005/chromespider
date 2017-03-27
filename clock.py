@@ -23,8 +23,6 @@ def scheduled_job():
     subprocess.Popen(cmd, shell=True)
     #sleep(check_period_hr*60*60 - 5*60)
 
-sched.start()
-
 while True:
     print "<<<<<"
     jobs=sched.get_jobs()
