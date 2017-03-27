@@ -22,10 +22,10 @@ def get_next_run_time(is_refresh_run):
         year = now.year
         month = now.month
         day = now.day
-        next_run_time_ = datetime(year,month,day,hour,minute)
+        next_run_time_ = datetime(year,month,day,hour,minute,tzinfo=TZ)
     else:
-        start_time = datetime(now.year,now.month,now.day,hour_start,minute_start)
-        end_time = datetime(now.year,now.month,now.day,hour_end,minute_end)
+        start_time = datetime(now.year,now.month,now.day,hour_start,minute_start,tzinfo=TZ)
+        end_time = datetime(now.year,now.month,now.day,hour_end,minute_end,tzinfo=TZ)
 
         if start_time <= now <= end_time:
             next_run_time_ = next_run_time + timedelta(minutes=in_between_delay_minute)
