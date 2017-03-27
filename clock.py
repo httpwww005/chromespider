@@ -14,7 +14,7 @@ def scheduled_job():
 
 
 def get_next_run_time(is_refresh_run):
-    now = datetime.utcnow()
+    now = datetime.now(TZ)
     hour=random.randint(2,6)
     minute=random.randint(0,59)
 
@@ -29,8 +29,8 @@ def get_next_run_time(is_refresh_run):
 
     return next_run_time_
 
-
-sched = BackgroundScheduler(timezone=pytz.timezone("Asia/Taipei"))
+TZ=pytz.timezone("Asia/Taipei")
+sched = BackgroundScheduler(timezone=TZ)
 next_run_time = get_next_run_time(True)
 
 scrapy_time     = 10 # minute
@@ -46,7 +46,7 @@ while True:
         job = sched.add_job(scheduled_job, next_run_time=get_next_run_time(False))
         print "new job scheduled at time: %s" % job.next_run_time
     
-    now = datetime.utcnow()
+    now = datetime.now(TZ)
     time_diff = job.next_run_time - now
     total_sleep = time_diff.total_seconds() + scrapy_time * 60
     print("sleep now for: %s" % str(timedelta(seconds=total_sleep)))
