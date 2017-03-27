@@ -9,6 +9,17 @@ import logging
 logging.basicConfig()
 
 
+hour_start = 2
+hour_end = 5
+minute_start = 0
+minute_end = 59
+in_between_delay_minute = 5
+scrapy_time = 30 # minute
+next_check_hours = 20
+
+TZ=pytz.timezone("Asia/Taipei")
+
+
 def scheduled_job():
     cmd = "scrapy crawl visitcount"
     print('Late night crawler is running: %s' % cmd)
@@ -40,20 +51,9 @@ def get_next_run_time(is_refresh_run):
             next_run_time_ = next_run_time + timedelta(days=1)
             next_run_time_ = next_run_time_.replace(hour=hour,minute=minute)
 
-
-    next_run_time = next_run_time_
     return next_run_time_
 
 
-hour_start = 2
-hour_end = 5
-minute_start = 0
-minute_end = 59
-in_between_delay_minute = 5
-scrapy_time = 30 # minute
-next_check_hours = 20
-
-TZ=pytz.timezone("Asia/Taipei")
 next_run_time = get_next_run_time(True)
 
 sched = BackgroundScheduler(timezone=TZ)
@@ -64,7 +64,8 @@ while True:
     jobs=sched.get_jobs()
 
     if( len(jobs) < 1 ):
-        job = sched.add_job(scheduled_job, next_run_time=get_next_run_time(False))
+        next_run_time = get_next_run_time(False)
+        job = sched.add_job(scheduled_job, next_run_time=next_run_time)
         print "new job scheduled at time: %s" % job.next_run_time
     
     now = datetime.now(TZ)
