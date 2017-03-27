@@ -4,6 +4,7 @@ import random
 from time import sleep
 from datetime import datetime
 from datetime import timedelta 
+import pytz
 
 
 def scheduled_job():
@@ -13,7 +14,7 @@ def scheduled_job():
 
 
 def get_next_run_time(is_refresh_run):
-    now = datetime.now()
+    now = datetime.utcnow()
     hour=random.randint(2,6)
     minute=random.randint(0,59)
 
@@ -29,7 +30,7 @@ def get_next_run_time(is_refresh_run):
     return next_run_time_
 
 
-sched = BackgroundScheduler()
+sched = BackgroundScheduler(timezone=pytz.timezone("Asia/Taipei"))
 next_run_time = get_next_run_time(True)
 
 scrapy_time     = 10 # minute
