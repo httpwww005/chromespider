@@ -1,4 +1,3 @@
-#from apscheduler.schedulers.blocking import BlockingScheduler
 from apscheduler.schedulers.background import BackgroundScheduler
 import subprocess
 import random
@@ -6,24 +5,16 @@ from time import sleep
 from datetime import datetime
 from datetime import timedelta 
 
-#sched = BlockingScheduler()
-sched = BackgroundScheduler()
 
-
-check_period_hr = 20 # hr
-scrapy_time     = 5  # minute
-
-job_id="scrapy_job"
-
-#@sched.scheduled_job('cron', id="scrapy_job", hour=3, minute=55)
 def scheduled_job():
     cmd = "scrapy crawl visitcount"
     print('Late night crawler is running: %s' % cmd)
     subprocess.Popen(cmd, shell=True)
 
+
 def get_next_run_time(is_refresh_run):
     now = datetime.now()
-    hour=random.randint(18,20)
+    hour=random.randint(2,6)
     minute=random.randint(0,59)
 
     if( is_refresh_run ):
@@ -37,28 +28,24 @@ def get_next_run_time(is_refresh_run):
 
     return next_run_time_
 
+
+sched = BackgroundScheduler()
+next_run_time = get_next_run_time(True)
+
+check_period_hr = 20 # hr
+scrapy_time     = 10 # minute
+
+
 sched.start()
 
-next_run_time = get_next_run_time(True)
 
 while True:
     jobs=sched.get_jobs()
 
     if( len(jobs) < 1 ):
-        job = sched.add_job(scheduled_job,id="scrapy_job",next_run_time=get_next_run_time(False))
+        job = sched.add_job(scheduled_job, next_run_time=get_next_run_time(False))
         print "new job scheduled at time: %s" % job.next_run_time
     
     total_sleep = timedelta(seconds=(check_period_hr*60*60 - scrapy_time*60))
     print("sleep now for: %s" % str(total_sleep))
-    #sleep(check_period_hr*60*60 - 5*60)
-    sleep(5)
-
-#def scheduled_job():
-#    cmd = "scrapy crawl visitcount"
-#    print('Late night crawler is running: %s' % cmd)
-#    subprocess.Popen(cmd, shell=True)
-
-
-#jobs = sched.get_jobs()
-#print(jobs)
-#print "xxxxxxxxxxxxx"
+    sleep(check_period_hr*60*60 - 5*60)
