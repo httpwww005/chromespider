@@ -29,6 +29,7 @@ def get_next_run_time(is_refresh_run):
         start_time = datetime(now.year,now.month,now.day,hour_start,minute_start,tzinfo=TZ)
         end_time = datetime(now.year,now.month,now.day,hour_end,minute_end,tzinfo=TZ)
     
+        print("next_run_time: %s" % next_run_time)
         print("start_time: %s" % start_time)
         print("end_time: %s" % end_time)
         if start_time <= next_run_time <= end_time:
