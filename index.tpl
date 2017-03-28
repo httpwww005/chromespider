@@ -20,14 +20,14 @@
 			if( url == null ) {
 				$('#datatable').DataTable()
 			} else {
-				$('#datatable').DataTable({ajax:url,pageLength:100});
+				var tbl = $('#datatable').DataTable({ajax:url,pageLength:100});
 			}
 
 			$("#date_select").change(function(){
 				var url = get_url()
 				if( url != null ) {
-					$('#datatable').DataTable().destroy()
-					$('#datatable').DataTable({ajax:url,pageLength:100});
+					tbl.ajax.url(url)
+					tbl.ajax.reload()
 				}
 			})
 		});

@@ -49,4 +49,4 @@ def table(created_on):
     return json.dumps(json_data)
 
 port = int(os.environ.get('PORT',5000))
-run(host='0.0.0.0', port=port, debug=False)
+run(host='0.0.0.0', port=port, debug=True)
