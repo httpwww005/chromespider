@@ -37,7 +37,7 @@ def index():
     all_dates = [date(year=x.year, month=x.month, day=x.day) for x in all_dates_]
     all_dates = list(set(all_dates))
     all_dates_list = sorted([x.strftime("%Y-%m-%d") for x in all_dates])
-    print(heroku_release, file=sys.stderr)
+    #print(heroku_release, file=sys.stderr)
     return template('index',header=header,dates=all_dates_list,heroku_release=heroku_release)
 
 
