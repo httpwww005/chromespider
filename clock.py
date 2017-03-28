@@ -27,9 +27,10 @@ def scheduled_job():
 
 
 def get_next_run_time(is_refresh_run):
-
+    now = datetime.now(TZ)
+    
     if( is_refresh_run ):
-        next_run_time_ = datetime.now(TZ)
+        next_run_time_ = now
     else:
         hour=random.randint(hour_start,hour_end)
         minute=random.randint(minute_start,minute_end)
@@ -40,14 +41,14 @@ def get_next_run_time(is_refresh_run):
         print("next_run_time: %s" % next_run_time)
         print("start_time: %s" % start_time)
         print("end_time: %s" % end_time)
-        if start_time <= next_run_time <= end_time:
-            print("next_run_time in between")
+        if start_time <= now <= end_time:
+            print("now in between")
             next_run_time_ = next_run_time + timedelta(minutes=in_between_delay_minute)
-        elif next_run_time < start_time:
-            print("next_run_time < start_time")
+        elif now < start_time:
+            print("now < start_time")
             next_run_time_ = next_run_time.replace(hour=hour,minute=minute)
         else:
-            print("next_run_time > end_time")
+            print("now > end_time")
             next_run_time_ = next_run_time + timedelta(days=1)
             next_run_time_ = next_run_time_.replace(hour=hour,minute=minute)
 
