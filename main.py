@@ -29,8 +29,6 @@ def get_rows(from_date, to_date):
     return rows
 
 
-
-
 @get('/')
 def index():
     all_dates_ = list(collection.find({},{"created_on":1}).distinct("created_on"))
