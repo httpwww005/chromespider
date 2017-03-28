@@ -8,6 +8,7 @@ from datetime import date
 
 home = os.environ.get("HOME","/tmp")
 csv_file = os.path.join(home, "visitcount.csv") 
+heroku_release = os.environ.get("HEROKU_RELEASE","unknow")
 
 import pymongo
 
@@ -32,7 +33,7 @@ def index():
     all_dates = list(set(all_dates))
     all_dates_list = sorted([x.strftime("%Y-%m-%d") for x in all_dates])
 
-    return template('index',header=header,dates=all_dates_list)
+    return template('index',header=header,dates=all_dates_list,heroku_release=heroku_release)
 
 
 @route('/table/<created_on:re:\d{4}-\d{2}-\d{2}>')
