@@ -8,7 +8,7 @@
 	<script type="text/javascript" charset="utf-8">
 		function get_url() {
 			var selected_day = $("#date_select").val()
-			if( selected_day == null ) {
+			if( (selected_day == null) || (/^\d{4}-\d{2}-\d{2}$/.test(selected_day)==false) ) {
 				return null
 			} else {
 				return "/table/"+selected_day
@@ -36,13 +36,15 @@
 </head>
 <body>
 	<div class="container">
-		<p>ver: {{heroku_release}}</p>
-		<select id="date_select">
+		<p>Revision: {{heroku_release}}</p>
+		Date:&nbsp;<select id="date_select">
 			% if len(dates) > 0:
 				%for date in dates[:-1]:
 				<option value="{{date}}">{{date}}</option>
 				%end
 				<option value="{{dates[-1]}}" selected="selected">{{dates[-1]}}</option>
+			% else:
+				<option value="">No data available</option>
 			% end
 		</select>
 		<p/>
