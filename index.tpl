@@ -36,7 +36,7 @@
 </head>
 <body>
 	<div class="container">
-		<p>ver: {{get(heroku_release,"unknow_revision")}}</p>
+		<p>ver: {{heroku_release}}</p>
 		<select id="date_select">
 			% if len(dates) > 0:
 				%for date in dates[:-1]:

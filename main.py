@@ -6,6 +6,9 @@ import os
 import datetime
 from datetime import date
 
+import logging
+logger = logging.getLogger()
+
 home = os.environ.get("HOME","/tmp")
 csv_file = os.path.join(home, "visitcount.csv") 
 heroku_release = os.environ.get("HEROKU_RELEASE","unknow")
@@ -26,13 +29,15 @@ def get_rows(from_date, to_date):
     return rows
 
 
+
+
 @get('/')
 def index():
     all_dates_ = list(collection.find({},{"created_on":1}).distinct("created_on"))
     all_dates = [date(year=x.year, month=x.month, day=x.day) for x in all_dates_]
     all_dates = list(set(all_dates))
     all_dates_list = sorted([x.strftime("%Y-%m-%d") for x in all_dates])
-
+    print(heroku_release, file=sys.stderr)
     return template('index',header=header,dates=all_dates_list,heroku_release=heroku_release)
 
 
@@ -44,7 +49,6 @@ def table(created_on):
     rows = get_rows(from_date, to_date)
     json_data = {"data":rows}
     return json.dumps(json_data)
-
 
 port = int(os.environ.get('PORT',5000))
 run(host='0.0.0.0', port=port, debug=True)
