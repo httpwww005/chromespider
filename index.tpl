@@ -54,7 +54,6 @@
 			% end
 		</select>
 		<p/>
-		<br/>
 		<table id="datatable" class="uk-table uk-table-hover uk-table-striped" cellspacing="0" width="100%">
 			<thead>
 				  <tr>
