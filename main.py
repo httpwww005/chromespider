@@ -36,10 +36,11 @@ def index():
     all_dates = list(set(all_dates))
     all_dates_list = sorted([x.strftime("%Y-%m-%d") for x in all_dates])
     #print(heroku_release, file=sys.stderr)
-    return template('index',header=header,dates=all_dates_list,heroku_release=heroku_release)
+    return template('index',header=header,dates=all_dates_list,heroku_release=heroku_release,re_created_on=re_created_on)
 
+re_created_on = "\d{4}-\d{2}-\d{2}"
 
-@route('/table/<created_on:re:\d{4}-\d{2}-\d{2}>')
+@route('/table/<created_on:re:%s>' % re_created_on)
 def table(created_on):
     y,m,d = map(int,created_on.split("-"))
     from_date = datetime.datetime(y,m,d)

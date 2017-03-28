@@ -8,7 +8,7 @@
 	<script type="text/javascript" charset="utf-8">
 		function get_url() {
 			var selected_day = $("#date_select").val()
-			if( /^\d{4}-\d{2}-\d{2}$/.test(selected_day)==false ) {
+			if( /{{re_created_on}}/.test(selected_day)==false ) {
 				return null
 			} else {
 				return "/table/"+selected_day
