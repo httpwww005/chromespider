@@ -11,7 +11,7 @@ logger = logging.getLogger()
 
 home = os.environ.get("HOME","/tmp")
 csv_file = os.path.join(home, "visitcount.csv") 
-heroku_release = os.environ.get("HEROKU_RELEASE","unknow")
+heroku_release = os.environ.get("HEROKU_RELEASE_VERSION","unknow")
 
 import pymongo
 
