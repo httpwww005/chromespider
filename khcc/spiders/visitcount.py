@@ -5,6 +5,10 @@ import re
 import os
 import datetime
 from scrapy.utils.project import get_project_settings
+import pytz
+
+TZ=pytz.timezone("Asia/Taipei")
+
 
 class VisitcountSpider(scrapy.Spider):
     name = "visitcount"
@@ -13,7 +17,7 @@ class VisitcountSpider(scrapy.Spider):
     url_base = "http://khvillages.khcc.gov.tw/"
 
     def __init__(self):
-        self.utcnow = datetime.datetime.utcnow()
+        self.created_on = datetime.datetime.now(TZ)
 
 	settings = get_project_settings()
         self.is_chromespider = settings.get("CHROME_SPIDER",False)
@@ -96,7 +100,7 @@ class VisitcountSpider(scrapy.Spider):
         yield {'location':location,
                 'address':address,
                 'count':count,
-                'created_on':self.utcnow
+                'created_on':self.created_on
                 }
 
     def spider_closed(self, spider):

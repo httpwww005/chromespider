@@ -5,6 +5,7 @@ from bottle import get, route, run, template
 import os
 import datetime
 from datetime import date
+import pytz
 
 import logging
 logger = logging.getLogger()
@@ -22,6 +23,7 @@ collection = db["visitcount"]
 
 header = ["created_on", "location", "address", "count"]
 
+TZ=pytz.timezone("Asia/Taipei")
 
 def get_rows(from_date, to_date):
     data = collection.find({"created_on":{"$gte":from_date,"$lt":to_date}})
@@ -31,12 +33,13 @@ def get_rows(from_date, to_date):
 
 @get('/')
 def index():
-    all_dates_ = list(collection.find({},{"created_on":1}).distinct("created_on"))
-    all_dates = [date(year=x.year, month=x.month, day=x.day) for x in all_dates_]
+    all_dates = list(collection.find({},{"created_on":1}).distinct("created_on"))
+    #all_dates = [x.replace(tzinfo=pytz.utc).astimezone(TZ).date() for x in all_dates]
+    all_dates = [x.date() for x in all_dates]
     all_dates = list(set(all_dates))
-    all_dates_list = sorted([x.strftime("%Y-%m-%d") for x in all_dates])
+    all_dates = sorted([x.strftime("%Y-%m-%d") for x in all_dates])
     #print(heroku_release, file=sys.stderr)
-    return template('index',header=header,dates=all_dates_list,heroku_release=heroku_release,re_created_on=re_created_on)
+    return template('index',header=header,dates=all_dates,heroku_release=heroku_release,re_created_on=re_created_on)
 
 re_created_on = "\d{4}-\d{2}-\d{2}"
 
@@ -47,6 +50,7 @@ def table(created_on):
     to_date = from_date + datetime.timedelta(days=1)
     rows = get_rows(from_date, to_date)
     json_data = {"data":rows}
+
     return json.dumps(json_data)
 
 
