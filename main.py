@@ -34,9 +34,6 @@ def get_rows(from_date, to_date):
 @get('/')
 def index():
     all_dates = list(collection.find({},{"created_on":1}).distinct("created_on"))
-    #all_dates = [x.replace(tzinfo=pytz.utc).astimezone(TZ).date() for x in all_dates]
-    all_dates = [x.date() for x in all_dates]
-    all_dates = list(set(all_dates))
     all_dates = sorted([x.strftime("%Y-%m-%d") for x in all_dates])
     #print(heroku_release, file=sys.stderr)
     return template('index',header=header,dates=all_dates,heroku_release=heroku_release,re_created_on=re_created_on)
