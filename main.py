@@ -42,8 +42,9 @@ re_created_on = "\d{4}-\d{2}-\d{2}"
 
 @route('/table/<created_on:re:%s>' % re_created_on)
 def table(created_on):
-    y,m,d = map(int,created_on.split("-"))
-    from_date = datetime.datetime(y,m,d)
+    #y,m,d = map(int,created_on.split("-"))
+    #from_date = datetime.datetime(y,m,d)
+    from_date = datetime.datetime.strptime(created_on,'%Y-%m-%d')
     to_date = from_date + datetime.timedelta(days=1)
     rows = get_rows(from_date, to_date)
     json_data = {"data":rows}
