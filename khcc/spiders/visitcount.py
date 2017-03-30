@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import sys
 import scrapy
 import urlparse
 import re
@@ -6,6 +7,7 @@ import os
 import datetime
 from scrapy.utils.project import get_project_settings
 import pytz
+import time
 
 TZ=pytz.timezone("Asia/Taipei")
 
@@ -21,13 +23,15 @@ class VisitcountSpider(scrapy.Spider):
 
 	settings = get_project_settings()
         self.is_chromespider = settings.get("CHROME_SPIDER",False)
+        #self.page_count = 0
 
         if self.is_chromespider:
             from selenium import webdriver
             chrome_bin_path = os.environ.get('CHROME_BIN', "")
             webdriver.ChromeOptions.binary_location = chrome_bin_path
             self.driver = webdriver.Chrome()
-
+            entry_url = "http://khvillages.khcc.gov.tw/home02.aspx?ID=$4002&IDK=2&EXEC=L&AP=$4002_SK3-115"
+            self.driver.get(entry_url)
 
     def start_requests(self):
 	urls = [
@@ -39,16 +43,24 @@ class VisitcountSpider(scrapy.Spider):
 
         for url in urls:
             if self.is_chromespider:
-                self.driver.get(url)
                 yield scrapy.Request(url=url, callback=self.parse_url_chrome, dont_filter=True)
             else:
                 yield scrapy.Request(url=url, callback=self.parse_url, dont_filter=True)
 
     def parse_url_chrome(self, response):
+        self.driver.get(response.url)
+        #self.logger.debug('url1: %s' % response.url)
+        #page_source = self.driver.page_source.encode("utf-8")
+        #filename = "%d.html" % self.page_count
+        #self.page_count += 1
+        #with open(filename, "w") as f:
+        #    f.write(page_source)
+
         ax = self.driver.find_elements_by_xpath("//a")
 
-        for a in ax:
-            url = a.get_attribute("href")
+        hrefs = [a.get_attribute("href") for a in ax]
+
+        for url in hrefs:
             if not url:
                 continue
             if("DATA=" in url) and ("_HISTORY-" in url):
