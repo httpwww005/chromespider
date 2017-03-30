@@ -47,27 +47,40 @@ class VisitcountSpider(scrapy.Spider):
 
 
     def start_requests(self):
-        if self.is_chromespider:
-            callback = self.parse_url_chrome
-        else:
-            callback = self.parse_url
+        #if self.is_chromespider:
+        #    callback = self.parse_url_chrome
+        #else:
+        #    callback = self.parse_url
 
         for p in self.url_pats:
             url = p % 1
-            yield scrapy.Request(url=url, callback=callback, dont_filter=True)
+            yield scrapy.Request(url=url, callback=self.parse_url, dont_filter=True)
 
 
-    def parse_url_chrome(self, response):
-        self.driver.get(response.url)
+    def parse_url(self, response):
+        if self.is_chromespider:
+            self.driver.get(response.url)
 
-        ax = self.driver.find_elements_by_xpath("//a")
+            ax = self.driver.find_elements_by_xpath("//a")
 
-        hrefs = []
-        for a in ax:
-            href = a.get_attribute("href")
-            if href:
-                hrefs.append(href)
-    
+            hrefs = []
+            for a in ax:
+                href = a.get_attribute("href")
+                if href:
+                    hrefs.append(href)
+        else:
+            ax = response.xpath("//a")
+            hrefs = []
+            for a in ax:
+                try:
+                    href = a.xpath("./@href")[0].extract()
+                except:
+                    pass
+
+                if href:
+                    hrefs.append(href)
+ 
+
         hrefs = [url for url in hrefs if(("DATA=" in url) and ("_HISTORY-" in url))]
 
         comp = re.compile("^.*DATA=(\d+)&AP.*$")
@@ -79,7 +92,11 @@ class VisitcountSpider(scrapy.Spider):
                 if int(m.group(1)) >= self.data_least:
                     urls.append(href)
 
+
         if len(urls) > 0:
+            if not self.is_chromespider:
+                urls = [urlparse.urljoin(self.allowed_domains[0],x) for x in urls]
+
             for url in urls:
                 yield scrapy.Request(url=url, callback=self.parse, dont_filter=True)
             
@@ -90,10 +107,10 @@ class VisitcountSpider(scrapy.Spider):
                 self.url_pat2_index += 1
                 next_url = self.url_pat2 % self.url_pat2_index
 
-            yield scrapy.Request(url=next_url, callback=self.parse_url_chrome, dont_filter=True)
+            yield scrapy.Request(url=next_url, callback=self.parse_url, dont_filter=True)
 
 
-    def parse_url(self, response):
+    def xparse_url(self, response):
         subject = response.xpath("//meta[@name='DC.Subject']/@content")[0].extract()
         self.logger.debug('subject: %s' % subject)
 
