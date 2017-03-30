@@ -8,6 +8,8 @@ import datetime
 from scrapy.utils.project import get_project_settings
 import pytz
 import time
+from scrapy.exceptions import CloseSpider
+from scrapy.signals import spider_closed
 
 TZ=pytz.timezone("Asia/Taipei")
 
@@ -23,17 +25,41 @@ class VisitcountSpider(scrapy.Spider):
 
 	settings = get_project_settings()
         self.is_chromespider = settings.get("CHROME_SPIDER",False)
-        #self.page_count = 0
+        self.close_count = 0
+        self.block_it = False
+
 
         if self.is_chromespider:
             from selenium import webdriver
             chrome_bin_path = os.environ.get('CHROME_BIN', "")
             webdriver.ChromeOptions.binary_location = chrome_bin_path
             self.driver = webdriver.Chrome()
-            entry_url = "http://khvillages.khcc.gov.tw/home02.aspx?ID=$4002&IDK=2&EXEC=L&AP=$4002_SK3-115"
-            self.driver.get(entry_url)
+            entry_url = ["http://khvillages.khcc.gov.tw/home02.aspx?ID=$4002&IDK=2&EXEC=L&AP=$4002_SK3-115", "http://khvillages.khcc.gov.tw/home02.aspx?ID=$4012&IDK=2&EXEC=L"]
+            for url in entry_url:
+                self.driver.get(url)
+
+
+    def url_generator(self):
+        count = 1
+    
+        url_pat1 = 'http://khvillages.khcc.gov.tw/home02.aspx?ID=$4001&IDK=2&AP=$4001_SK--1^$4001_SK2--1^$4001_PN-%d^$4001_HISTORY-0'
+        url_pat2 = 'http://khvillages.khcc.gov.tw/home02.aspx?ID=$4011&IDK=2&AP=$4011_SK-^$4011_SK2--1^$4011_PN-%d^$4011_HISTORY-0'
+        #url_pat2 = 'http://khvillages.khcc.gov.tw/home02.aspx?ID=$4011&IDK=2&AP=$4011_SK-^$4011_SK2--1^$4011_PN-%d^$4011_HISTORY-0',
+        while self.close_count < 3:
+            url = url_pat1 % int(count)
+            yield url
+
+            time.sleep(1)
+            url = url_pat2 % int(count)
+            yield url
+
+            time.sleep(1)
+            count += 1
+
+
 
     def start_requests(self):
+
 	urls = [
             'http://khvillages.khcc.gov.tw/home02.aspx?ID=$4001&IDK=2&AP=$4001_SK--1^$4001_SK2--1^$4001_PN-1^$4001_HISTORY-0',
 	    'http://khvillages.khcc.gov.tw/home02.aspx?ID=$4001&IDK=2&AP=$4001_SK--1^$4001_SK2--1^$4001_PN-2^$4001_HISTORY-0',
@@ -42,29 +68,33 @@ class VisitcountSpider(scrapy.Spider):
 	]
 
         for url in urls:
+        #for url in self.url_generator():
             if self.is_chromespider:
                 yield scrapy.Request(url=url, callback=self.parse_url_chrome, dont_filter=True)
             else:
                 yield scrapy.Request(url=url, callback=self.parse_url, dont_filter=True)
 
+
     def parse_url_chrome(self, response):
         self.driver.get(response.url)
-        #self.logger.debug('url1: %s' % response.url)
-        #page_source = self.driver.page_source.encode("utf-8")
-        #filename = "%d.html" % self.page_count
-        #self.page_count += 1
-        #with open(filename, "w") as f:
-        #    f.write(page_source)
 
         ax = self.driver.find_elements_by_xpath("//a")
 
-        hrefs = [a.get_attribute("href") for a in ax]
+        hrefs = []
+        for a in ax:
+            href = a.get_attribute("href")
+            if href:
+                hrefs.append(href)
 
-        for url in hrefs:
-            if not url:
-                continue
-            if("DATA=" in url) and ("_HISTORY-" in url):
+        hrefs = [url for url in hrefs if(("DATA=" in url) and ("_HISTORY-" in url))]
+
+        if len(hrefs) > 0:
+            for url in hrefs:
                 yield scrapy.Request(url=url, callback=self.parse, dont_filter=True)
+        else:
+            self.close_count += 1
+            if( self.close_count > 2 ):
+                raise CloseSpider('No more urls to crawl!')
 
 
     def parse_url(self, response):
