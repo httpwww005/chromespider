@@ -10,7 +10,6 @@ from scrapy.utils.project import get_project_settings
 import pytz
 import time
 from scrapy.exceptions import CloseSpider
-from scrapy.signals import spider_closed
 
 TZ=pytz.timezone("Asia/Taipei")
 
@@ -144,6 +143,3 @@ class VisitcountSpider(scrapy.Spider):
                 'count':count,
                 'created_on':self.created_on
                 }
-
-    def spider_closed(self, spider):
-        pass
