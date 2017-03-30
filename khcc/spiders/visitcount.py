@@ -32,6 +32,7 @@ class VisitcountSpider(scrapy.Spider):
         self.url_pat2 = 'http://khvillages.khcc.gov.tw/home02.aspx?ID=$4011&IDK=2&AP=$4011_SK-^$4011_SK2--1^$4011_PN-%d^$4011_HISTORY-0'
         self.url_pat1_index = 1
         self.url_pat2_index = 1
+        self.url_pats = [self.url_pat1, self.url_pat2]
 
         self.data_least = 2066
 
@@ -51,7 +52,7 @@ class VisitcountSpider(scrapy.Spider):
         else:
             callback = self.parse_url
 
-        for p in [self.url_pat1, self.url_pat2]:
+        for p in self.url_pats:
             url = p % 1
             yield scrapy.Request(url=url, callback=callback, dont_filter=True)
 
