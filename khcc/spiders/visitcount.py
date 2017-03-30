@@ -45,11 +45,6 @@ class VisitcountSpider(scrapy.Spider):
 
 
     def start_requests(self):
-        #if self.is_chromespider:
-        #    callback = self.parse_url_chrome
-        #else:
-        #    callback = self.parse_url
-
         for p in self.url_pats:
             url = p % 1
             yield scrapy.Request(url=url, callback=self.parse_url, dont_filter=True)
