@@ -58,28 +58,26 @@ class VisitcountSpider(scrapy.Spider):
 
 
     def parse_url(self, response):
+
         if self.is_chromespider:
             self.driver.get(response.url)
-
             ax = self.driver.find_elements_by_xpath("//a")
-
-            hrefs = []
-            for a in ax:
-                href = a.get_attribute("href")
-                if href:
-                    hrefs.append(href)
         else:
             ax = response.xpath("//a")
-            hrefs = []
-            for a in ax:
+
+        hrefs = []
+        for a in ax:
+            if self.is_chromespider:
+                href = a.get_attribute("href")
+            else:
                 try:
                     href = a.xpath("./@href")[0].extract()
                 except:
                     pass
 
-                if href:
-                    hrefs.append(href)
- 
+            if href:
+                hrefs.append(href)
+
 
         hrefs = [url for url in hrefs if(("DATA=" in url) and ("_HISTORY-" in url))]
 
