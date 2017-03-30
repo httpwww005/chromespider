@@ -26,8 +26,6 @@ class VisitcountSpider(scrapy.Spider):
 
 	settings = get_project_settings()
         self.is_chromespider = settings.get("CHROME_SPIDER",False)
-        self.close_count = 0
-        self.block_it = False
         self.url_pat1 = 'http://khvillages.khcc.gov.tw/home02.aspx?ID=$4001&IDK=2&AP=$4001_SK--1^$4001_SK2--1^$4001_PN-%d^$4001_HISTORY-0'
         self.url_pat2 = 'http://khvillages.khcc.gov.tw/home02.aspx?ID=$4011&IDK=2&AP=$4011_SK-^$4011_SK2--1^$4011_PN-%d^$4011_HISTORY-0'
         self.url_pat1_index = 1
