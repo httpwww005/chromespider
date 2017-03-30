@@ -100,26 +100,6 @@ class VisitcountSpider(scrapy.Spider):
             yield scrapy.Request(url=next_url, callback=self.parse_url, dont_filter=True)
 
 
-    def xparse_url(self, response):
-        subject = response.xpath("//meta[@name='DC.Subject']/@content")[0].extract()
-        self.logger.debug('subject: %s' % subject)
-
-        if u"建物簡介" in subject:
-            ax = response.xpath("//a")
-            for a in ax:
-                try:
-                    href = a.xpath("./@href")[0].extract() or ""
-                    text = a.xpath("./text()")[0].extract() or ""
-                except:
-                    pass
-
-                if (("AP=$4011_HISTORY-0" in href) or ("AP=$4001_HISTORY-0" in href)) \
-                and ((u"全民修屋" in text) or (u"建業新村" in text)):
-                    url = urlparse.urljoin(self.url_base, href)
-                    self.logger.debug('url: %s' % url)
-                    yield scrapy.Request(url=url, callback=self.parse, dont_filter=True)
-
-
     def parse(self, response):
         location_1 = response.xpath("//meta[@name='DC.Title']/@content")[0].extract()
 
