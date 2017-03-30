@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import re
 import sys
 import scrapy
 import urlparse
@@ -27,7 +28,12 @@ class VisitcountSpider(scrapy.Spider):
         self.is_chromespider = settings.get("CHROME_SPIDER",False)
         self.close_count = 0
         self.block_it = False
+        self.url_pat1 = 'http://khvillages.khcc.gov.tw/home02.aspx?ID=$4001&IDK=2&AP=$4001_SK--1^$4001_SK2--1^$4001_PN-%d^$4001_HISTORY-0'
+        self.url_pat2 = 'http://khvillages.khcc.gov.tw/home02.aspx?ID=$4011&IDK=2&AP=$4011_SK-^$4011_SK2--1^$4011_PN-%d^$4011_HISTORY-0'
+        self.url_pat1_index = 1
+        self.url_pat2_index = 1
 
+        self.data_least = 2066
 
         if self.is_chromespider:
             from selenium import webdriver
@@ -39,40 +45,15 @@ class VisitcountSpider(scrapy.Spider):
                 self.driver.get(url)
 
 
-    def url_generator(self):
-        count = 1
-    
-        url_pat1 = 'http://khvillages.khcc.gov.tw/home02.aspx?ID=$4001&IDK=2&AP=$4001_SK--1^$4001_SK2--1^$4001_PN-%d^$4001_HISTORY-0'
-        url_pat2 = 'http://khvillages.khcc.gov.tw/home02.aspx?ID=$4011&IDK=2&AP=$4011_SK-^$4011_SK2--1^$4011_PN-%d^$4011_HISTORY-0'
-        #url_pat2 = 'http://khvillages.khcc.gov.tw/home02.aspx?ID=$4011&IDK=2&AP=$4011_SK-^$4011_SK2--1^$4011_PN-%d^$4011_HISTORY-0',
-        while self.close_count < 3:
-            url = url_pat1 % int(count)
-            yield url
-
-            time.sleep(1)
-            url = url_pat2 % int(count)
-            yield url
-
-            time.sleep(1)
-            count += 1
-
-
-
     def start_requests(self):
+        if self.is_chromespider:
+            callback = self.parse_url_chrome
+        else:
+            callback = self.parse_url
 
-	urls = [
-            'http://khvillages.khcc.gov.tw/home02.aspx?ID=$4001&IDK=2&AP=$4001_SK--1^$4001_SK2--1^$4001_PN-1^$4001_HISTORY-0',
-	    'http://khvillages.khcc.gov.tw/home02.aspx?ID=$4001&IDK=2&AP=$4001_SK--1^$4001_SK2--1^$4001_PN-2^$4001_HISTORY-0',
-            'http://khvillages.khcc.gov.tw/home02.aspx?ID=$4011&IDK=2&AP=$4011_SK-^$4011_SK2--1^$4011_PN-1^$4011_HISTORY-0',
-            'http://khvillages.khcc.gov.tw/home02.aspx?ID=$4011&IDK=2&AP=$4011_SK-^$4011_SK2--1^$4011_PN-2^$4011_HISTORY-0'
-	]
-
-        for url in urls:
-        #for url in self.url_generator():
-            if self.is_chromespider:
-                yield scrapy.Request(url=url, callback=self.parse_url_chrome, dont_filter=True)
-            else:
-                yield scrapy.Request(url=url, callback=self.parse_url, dont_filter=True)
+        for p in [self.url_pat1, self.url_pat2]:
+            url = p % 1
+            yield scrapy.Request(url=url, callback=callback, dont_filter=True)
 
 
     def parse_url_chrome(self, response):
@@ -85,23 +66,33 @@ class VisitcountSpider(scrapy.Spider):
             href = a.get_attribute("href")
             if href:
                 hrefs.append(href)
-
+    
         hrefs = [url for url in hrefs if(("DATA=" in url) and ("_HISTORY-" in url))]
 
-        if len(hrefs) > 0:
-            for url in hrefs:
+        comp = re.compile("^.*DATA=(\d+)&AP.*$")
+
+        urls = []
+        for href in hrefs:
+            m = comp.match(href)
+            if m:
+                if int(m.group(1)) >= self.data_least:
+                    urls.append(href)
+
+        if len(urls) > 0:
+            for url in urls:
                 yield scrapy.Request(url=url, callback=self.parse, dont_filter=True)
-        else:
-            self.close_count += 1
-            if( self.close_count > 2 ):
-                raise CloseSpider('No more urls to crawl!')
+            
+            if "4001" in response.url:
+                self.url_pat1_index += 1
+                next_url = self.url_pat1 % self.url_pat1_index
+            else:
+                self.url_pat2_index += 1
+                next_url = self.url_pat2 % self.url_pat2_index
+
+            yield scrapy.Request(url=next_url, callback=self.parse_url_chrome, dont_filter=True)
 
 
     def parse_url(self, response):
-        #filename = binascii.b2a_hex(os.urandom(8))
-        #with open(filename, "w") as f:
-        #    f.write(response.body)
-
         subject = response.xpath("//meta[@name='DC.Subject']/@content")[0].extract()
         self.logger.debug('subject: %s' % subject)
 
