@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import re
 import sys
 import scrapy
 import urlparse
@@ -8,8 +7,6 @@ import os
 import datetime
 from scrapy.utils.project import get_project_settings
 import pytz
-import time
-from scrapy.exceptions import CloseSpider
 
 TZ=pytz.timezone("Asia/Taipei")
 
