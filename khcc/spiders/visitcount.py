@@ -83,7 +83,7 @@ class VisitcountSpider(scrapy.Spider):
             for url in urls:
                 yield scrapy.Request(url=url, callback=self.parse, dont_filter=True)
             
-            if "4001" in response.url:
+            if "4011_HISTORY" in response.url:
                 self.url_pat1_index += 1
                 next_url = self.url_pat1 % self.url_pat1_index
             else:
