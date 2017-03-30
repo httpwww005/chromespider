@@ -35,15 +35,12 @@ def get_rows(from_date, to_date):
 def index():
     all_dates = list(collection.find({},{"created_on":1}).distinct("created_on"))
     all_dates = sorted([str(x.date()) for x in all_dates])
-    #print(heroku_release, file=sys.stderr)
     return template('index',header=header,dates=all_dates,heroku_release=heroku_release,re_created_on=re_created_on)
 
 re_created_on = "\d{4}-\d{2}-\d{2}"
 
 @route('/table/<created_on:re:%s>' % re_created_on)
 def table(created_on):
-    #y,m,d = map(int,created_on.split("-"))
-    #from_date = datetime.datetime(y,m,d)
     from_date = datetime.datetime.strptime(created_on,'%Y-%m-%d')
     to_date = from_date + datetime.timedelta(days=1)
     rows = get_rows(from_date, to_date)
