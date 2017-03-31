@@ -12,7 +12,7 @@
 	<!-- <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.13/js/dataTables.bootstrap.min.js"></script> -->
 	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.13/js/dataTables.uikit.min.js"></script>
 	<script type="text/javascript" charset="utf-8">
-		function get_url() {
+		function get_table() {
 			var selected_day = $("#date_select").val()
 			if( /{{re_created_on}}/.test(selected_day)==false ) {
 				return null
@@ -20,17 +20,31 @@
 				return "/table/"+selected_day
 			}
 		}
+
+		function get_csv() {
+			var selected_day = $("#date_select").val()
+			if( /{{re_created_on}}/.test(selected_day)==false ) {
+				return null
+			} else {
+				return "/csv/"+selected_day
+			}
+		}
 	
 		$(document).ready(function() {
-			var url = get_url()
+			var url = get_table()
 			if( url == null ) {
 				$('#datatable').DataTable()
 			} else {
 				var tbl = $('#datatable').DataTable({ajax:url,pageLength:100});
 			}
 
+			$("#csv_btn").click(function(){
+				var url = get_csv()
+				window.location = url
+			})
+
 			$("#date_select").change(function(){
-				var url = get_url()
+				var url = get_table()
 				if( url != null ) {
 					tbl.ajax.url(url)
 					tbl.ajax.reload()
@@ -53,6 +67,7 @@
 				<option value="">No data available</option>
 			% end
 		</select>
+		<button type="button" id="csv_btn">Download CSV</button>
 		<p/>
 		<table id="datatable" class="uk-table uk-table-hover uk-table-striped" cellspacing="0" width="100%">
 			<thead>

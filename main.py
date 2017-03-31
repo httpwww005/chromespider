@@ -7,7 +7,6 @@ import datetime
 from datetime import date
 import pytz
 from bottle import response
-import gridfs
 
 import logging
 logger = logging.getLogger()
@@ -15,6 +14,7 @@ logger = logging.getLogger()
 heroku_release = os.environ.get("HEROKU_RELEASE_VERSION","unknow")
 
 import pymongo
+import gridfs
 
 MONGODB_URI=os.environ["MONGODB_URI"]
 MONGODBCSV_URI=os.environ["MONGODBCSV_URI"]
