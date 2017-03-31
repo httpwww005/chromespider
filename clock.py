@@ -1,10 +1,13 @@
 from apscheduler.schedulers.background import BackgroundScheduler
 import subprocess
+import os
 import random
 from time import sleep
 from datetime import datetime
 from datetime import timedelta 
 import pytz
+import pymongo
+import gridfs
 import logging
 logging.basicConfig()
 
@@ -20,11 +23,30 @@ next_check_hours = 20
 TZ=pytz.timezone("Asia/Taipei")
 
 
+def save_csv(new_date):
+    home = os.environ.get("HOME","/tmp")
+    csv_file = os.path.join(home, "visitcount.csv") 
+    MONGODBCSV_URI=os.environ["MONGODBCSV_URI"]
+    client = pymongo.MongoClient(MONGODBCSV_URI)
+    db = client["csv"]
+    fs_db = gridfs.GridFS(db)
+
+    new_filename = "%s.csv" % new_date
+
+    with open(csv_file, 'r') as fp_local:
+        with fs_db.new_file(filename=new_filename) as fp_remote:
+            fp_remote.write(fp_local.read())
+
+
 def scheduled_job():
     cmd = "scrapy crawl visitcount"
     print('Late night crawler is running: %s' % cmd)
-    subprocess.Popen(cmd, shell=True)
+    process = subprocess.Popen(cmd, shell=True)
+    process.wait()
 
+    new_date = str(datetime.now(TZ).date())
+    print('save visitcount.csv as %s.csv in gridfs' % new_date)
+    save_csv(new_date)
 
 def get_next_run_time(is_refresh_run):
     now = datetime.now(TZ)
