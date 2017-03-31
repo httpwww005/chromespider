@@ -38,11 +38,6 @@ def save_csv(new_date):
         with fs_db.new_file(filename=new_filename) as fp_remote:
             fp_remote.write(fp_local.read())
 
-def get_csv(date):
-    filename = "%s.csv" % date
-    fp = fs_db.get_last_version(filename)
-    return fp.read()
-
 
 def scheduled_job():
     cmd = "scrapy crawl visitcount"

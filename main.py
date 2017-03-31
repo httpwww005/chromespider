@@ -6,6 +6,8 @@ import os
 import datetime
 from datetime import date
 import pytz
+from bottle import response
+import gridfs
 
 import logging
 logger = logging.getLogger()
@@ -15,8 +17,12 @@ heroku_release = os.environ.get("HEROKU_RELEASE_VERSION","unknow")
 import pymongo
 
 MONGODB_URI=os.environ["MONGODB_URI"]
+MONGODBCSV_URI=os.environ["MONGODBCSV_URI"]
 client = pymongo.MongoClient(MONGODB_URI)
+client_csv = pymongo.MongoClient(MONGODBCSV_URI)
 db = client["khcc"]
+db_csv = client_csv["csv"]
+fs_db = gridfs.GridFS(db_csv)
 collection = db["visitcount"]
 
 header = ["created_on", "location", "address", "count"]
@@ -45,6 +51,15 @@ def table(created_on):
     json_data = {"data":rows}
 
     return json.dumps(json_data)
+
+
+@route('/csv/<created_on:re:%s>' % re_created_on)
+def csv(created_on):
+    filename = "%s.csv" % created_on
+    fp = fs_db.get_last_version(filename)
+    data = fp.read()
+    response.content_type = "text/csv"
+    return data
 
 
 port = int(os.environ.get('PORT',5000))
