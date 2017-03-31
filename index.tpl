@@ -2,15 +2,10 @@
 <head>
     <meta charset="utf-8" />
     <title>table</title>
-	<!--<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css"> 
-	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.13/css/dataTables.bootstrap.min.css"> -->
-	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/2.24.3/css/uikit.min.css">
-	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.13/css/dataTables.uikit.min.css">
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css"> 
     <script type="text/javascript" language="javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
-	<!-- <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.13/js/dataTables.bootstrap.min.js"></script> -->
-	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.13/js/dataTables.uikit.min.js"></script>
+
 	<script type="text/javascript" charset="utf-8">
 		function get_table() {
 			var selected_day = $("#date_select").val()
@@ -69,7 +64,7 @@
 		</select>
 		<button type="button" id="csv_btn">Download CSV</button>
 		<p/>
-		<table id="datatable" class="uk-table uk-table-hover uk-table-striped" cellspacing="0" width="100%">
+		<table id="datatable" class="display" cellspacing="0" width="100%">
 			<thead>
 				  <tr>
 				  %for col in header:
