@@ -7,26 +7,17 @@
 	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
 
 	<script type="text/javascript" charset="utf-8">
-		function get_table() {
-			var selected_day = $("#date_select").val()
-			if( /{{re_created_on}}/.test(selected_day)==false ) {
+		function get_selected(path) {
+			var selected = $("#date_select").val()
+			if( /{{re_created_on}}/.test(selected)==false ) {
 				return null
 			} else {
-				return "/table/"+selected_day
-			}
-		}
-
-		function get_csv() {
-			var selected_day = $("#date_select").val()
-			if( /{{re_created_on}}/.test(selected_day)==false ) {
-				return null
-			} else {
-				return "/csv/"+selected_day
+				return path+"/"+selected
 			}
 		}
 	
 		$(document).ready(function() {
-			var url = get_table()
+			var url = get_selected("table")
 			if( url == null ) {
 				$('#datatable').DataTable()
 			} else {
@@ -34,12 +25,12 @@
 			}
 
 			$("#csv_btn").click(function(){
-				var url = get_csv()
+				var url = get_selected("csv")
 				window.location = url
 			})
 
 			$("#date_select").change(function(){
-				var url = get_table()
+				var url = get_selected("table")
 				if( url != null ) {
 					tbl.ajax.url(url)
 					tbl.ajax.reload()
