@@ -30,7 +30,7 @@
 			if( url == null ) {
 				$('#datatable').DataTable()
 			} else {
-				var tbl = $('#datatable').DataTable({ajax:url,pageLength:100});
+				var tbl = $('#datatable').DataTable({ajax:url,"order": [[ 2, "desc" ]],pageLength:100});
 			}
 
 			$("#csv_btn").click(function(){
