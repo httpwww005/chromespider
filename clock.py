@@ -92,7 +92,6 @@ while True:
         job = sched.add_job(scheduled_job, next_run_time=next_run_time)
         logging.debug("new job scheduled at time: %s" % job.next_run_time)
     
-    now = datetime.now(TZ)
     time_diff = job.next_run_time + timedelta(hours=next_check_hours) 
     sleep_seconds = next_check_hours * 60 * 60
     logging.debug("next check time: %s" % time_diff)
