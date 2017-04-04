@@ -1,6 +1,7 @@
 from apscheduler.schedulers.background import BackgroundScheduler
 import subprocess
 import os
+import sys
 import random
 from time import sleep
 from datetime import datetime
@@ -9,8 +10,6 @@ import pytz
 import pymongo
 import gridfs
 import logging
-logging.basicConfig()
-
 
 hour_start = 2
 hour_end = 5
@@ -27,6 +26,7 @@ client = pymongo.MongoClient(MONGODBCSV_URI)
 db = client["csv"]
 fs_db = gridfs.GridFS(db)
 
+logging.basicConfig(format='%(filename)s:%(levelname)s:%(message)s', level=logging.DEBUG)
 
 def save_csv(new_date):
     home = os.environ.get("HOME","/tmp")
@@ -41,12 +41,12 @@ def save_csv(new_date):
 
 def scheduled_job():
     cmd = "scrapy crawl visitcount"
-    print('Late night crawler is running: %s' % cmd)
+    logging.debug('Late night crawler is running: %s' % cmd)
     process = subprocess.Popen(cmd, shell=True)
     process.wait()
 
     new_date = str(datetime.now(TZ).date())
-    print('save visitcount.csv as %s.csv in gridfs' % new_date)
+    logging.debug('save visitcount.csv as %s.csv in gridfs' % new_date)
     save_csv(new_date)
 
 def get_next_run_time(is_refresh_run):
@@ -61,17 +61,17 @@ def get_next_run_time(is_refresh_run):
         start_time = datetime(next_run_time.year,next_run_time.month,next_run_time.day,hour_start,minute_start,tzinfo=TZ)
         end_time = start_time.replace(hour=hour_end, minute=minute_end)
     
-        print("next_run_time: %s" % next_run_time)
-        print("start_time: %s" % start_time)
-        print("end_time: %s" % end_time)
+        logging.debug("next_run_time: %s" % next_run_time)
+        logging.debug("start_time: %s" % start_time)
+        logging.debug("end_time: %s" % end_time)
         if start_time <= now <= end_time:
-            print("now in between")
-            next_run_time_ = next_run_time + timedelta(minutes=in_between_delay_minute)
+            logging.debug("now in between")
+            next_run_time_ = now + timedelta(minutes=in_between_delay_minute)
         elif now < start_time:
-            print("now < start_time")
+            logging.debug("now < start_time")
             next_run_time_ = next_run_time.replace(hour=hour,minute=minute)
         else:
-            print("now > end_time")
+            logging.debug("now > end_time")
             next_run_time_ = next_run_time + timedelta(days=1)
             next_run_time_ = next_run_time_.replace(hour=hour,minute=minute)
 
@@ -90,10 +90,10 @@ while True:
     if( len(jobs) < 1 ):
         next_run_time = get_next_run_time(False)
         job = sched.add_job(scheduled_job, next_run_time=next_run_time)
-        print "new job scheduled at time: %s" % job.next_run_time
+        logging.debug("new job scheduled at time: %s" % job.next_run_time)
     
     now = datetime.now(TZ)
     time_diff = job.next_run_time + timedelta(hours=next_check_hours) 
     sleep_seconds = next_check_hours * 60 * 60
-    print("next check time: %s" % time_diff)
+    logging.debug("next check time: %s" % time_diff)
     sleep(sleep_seconds)
