@@ -31,7 +31,7 @@ class VisitcountSpider(scrapy.Spider):
         else:
             self.is_chromespider = False
 
-        self.imgur_delay = imgur_delay
+        self.imgur_delay = int(imgur_delay)
         
         self.imgur_album = imgur_album
 
