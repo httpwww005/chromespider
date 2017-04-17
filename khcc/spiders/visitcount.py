@@ -18,11 +18,13 @@ class VisitcountSpider(scrapy.Spider):
     allowed_domains = ["http://khvillages.khcc.gov.tw"]
     url_base = "http://khvillages.khcc.gov.tw/"
 
-    def __init__(self, upload_image="n"):
+    def __init__(self, upload_image="n", imgur_album=None):
         self.created_on = datetime.datetime.now(TZ)
 
         if upload_image == "y":
             self.upload_image = True
+        
+        self.imgur_album = imgur_album
 
 	settings = get_project_settings()
         self.is_chromespider = settings.get("CHROME_SPIDER",False)

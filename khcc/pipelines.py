@@ -20,13 +20,18 @@ class ImgurPipeline(object):
         imgur_secret = os.environ.get('IMGUR_SECRET', "")
         imgur_refresh_token = os.environ.get('IMGUR_REFRESH_TOKEN', "")
         #mashape_key = os.environ.get('IMGUR_MASHAPE_KEY', "")
-        self.imgur_album = "igBnl"
         self.imgur_delay = 70 # upload limit, 1 hour 50 images, 60/50=1.2
         self.imgur_client = ImgurClient(
                 imgur_id, 
                 imgur_secret, 
                 refresh_token=imgur_refresh_token)
                 #mashape_key=mashape_key)
+
+
+    def open_spider(self, spider):
+        self.imgur_album = spider.imgur_album
+        logger.debug('imgur_album: %s' % self.imgur_album)
+
 
     def process_item(self, item, spider):
         imgur_urls = []
