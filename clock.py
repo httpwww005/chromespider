@@ -40,7 +40,7 @@ def save_csv(new_date):
 
 
 def scheduled_job():
-    cmd = "scrapy crawl visitcount"
+    cmd = os.environ.get("SCRAPY_CMD",None)
     logging.debug('Late night crawler is running: %s' % cmd)
     process = subprocess.Popen(cmd, shell=True)
     process.wait()
