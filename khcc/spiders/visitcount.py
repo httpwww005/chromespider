@@ -18,16 +18,21 @@ class VisitcountSpider(scrapy.Spider):
     allowed_domains = ["http://khvillages.khcc.gov.tw"]
     url_base = "http://khvillages.khcc.gov.tw/"
 
-    def __init__(self, upload_image="n", imgur_album=None):
+    def __init__(self, upload_image="n", chrome_spider="n", imgur_album=None):
         self.created_on = datetime.datetime.now(TZ)
 
         if upload_image == "y":
             self.upload_image = True
+        else:
+            self.upload_image = False
+
+        if chrome_spider == "y":
+            self.is_chromespider = True
+        else:
+            self.is_chromespider = False
         
         self.imgur_album = imgur_album
 
-	settings = get_project_settings()
-        self.is_chromespider = settings.get("CHROME_SPIDER",False)
         self.url_pat1 = 'http://khvillages.khcc.gov.tw/home02.aspx?ID=$4001&IDK=2&AP=$4001_SK--1^$4001_SK2--1^$4001_PN-%d^$4001_HISTORY-0'
         self.url_pat2 = 'http://khvillages.khcc.gov.tw/home02.aspx?ID=$4011&IDK=2&AP=$4011_SK-^$4011_SK2--1^$4011_PN-%d^$4011_HISTORY-0'
         self.url_pat1_index = 1
