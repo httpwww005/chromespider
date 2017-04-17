@@ -2,11 +2,13 @@
 import sys
 import scrapy
 import urlparse
+import urllib
 import re
 import os
 import datetime
 from scrapy.utils.project import get_project_settings
 import pytz
+import requests
 
 TZ=pytz.timezone("Asia/Taipei")
 
@@ -17,8 +19,11 @@ class VisitcountSpider(scrapy.Spider):
     allowed_domains = ["http://khvillages.khcc.gov.tw"]
     url_base = "http://khvillages.khcc.gov.tw/"
 
-    def __init__(self):
+    def __init__(self, upload_image="n"):
         self.created_on = datetime.datetime.now(TZ)
+
+        if upload_image == "y":
+            self.upload_image = True
 
 	settings = get_project_settings()
         self.is_chromespider = settings.get("CHROME_SPIDER",False)
@@ -38,7 +43,7 @@ class VisitcountSpider(scrapy.Spider):
             entry_url = ["http://khvillages.khcc.gov.tw/home02.aspx?ID=$4002&IDK=2&EXEC=L&AP=$4002_SK3-115", "http://khvillages.khcc.gov.tw/home02.aspx?ID=$4012&IDK=2&EXEC=L"]
             for url in entry_url:
                 self.driver.get(url)
-
+    
 
     def start_requests(self):
         for p in self.url_pats:
@@ -85,7 +90,10 @@ class VisitcountSpider(scrapy.Spider):
                 urls = [urlparse.urljoin(self.allowed_domains[0],x) for x in urls]
 
             for url in urls:
-                yield scrapy.Request(url=url, callback=self.parse, dont_filter=True)
+                if( self.upload_image ):
+                    yield scrapy.Request(url=url, callback=self.parse_img, dont_filter=True)
+                else:
+                    yield scrapy.Request(url=url, callback=self.parse, dont_filter=True)
             
             if "4011_HISTORY" in response.url:
                 self.url_pat1_index += 1
@@ -119,4 +127,31 @@ class VisitcountSpider(scrapy.Spider):
                 'address':address,
                 'count':count,
                 'created_on':self.created_on
+                }    
+        
+
+    def parse_img(self, response):
+        location_1 = response.xpath("//meta[@name='DC.Title']/@content")[0].extract()
+
+        if u"左營" in location_1:
+            location = u"左營"
+        else:
+            location = u"鳳山"
+
+        self.logger.debug('location: %s' % location)
+
+        address_1 = response.xpath("//meta[@name='DC.Subject']/@content")[0].extract() 
+        address = re.match(ur"^[^\d]+([\d-]+).*$",address_1).group(1)
+
+        self.logger.debug('address: %s' % address)
+
+        xpath_img = "//img[@alt='%s']/@src" % address
+        image_urls = response.xpath(xpath_img).extract()
+        self.logger.debug('image_urls: %s' % image_urls)
+        image_urls = [urlparse.urljoin(self.url_base, urllib.quote(x.encode("utf-8"))) for x in image_urls if x]
+
+        yield {'location':location,
+                'address':address,
+                'created_on':self.created_on,
+                'image_urls':image_urls
                 }

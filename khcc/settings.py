@@ -29,7 +29,8 @@ ROBOTSTXT_OBEY = True
 # Configure a delay for requests for the same website (default: 0)
 # See http://scrapy.readthedocs.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-#DOWNLOAD_DELAY = 3
+RANDOMIZE_DOWNLOAD_DELAY = True
+DOWNLOAD_DELAY = 3
 # The download delay setting will honor only one of:
 #CONCURRENT_REQUESTS_PER_DOMAIN = 16
 #CONCURRENT_REQUESTS_PER_IP = 16
@@ -66,7 +67,11 @@ ROBOTSTXT_OBEY = True
 
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
-ITEM_PIPELINES = {'scrapy_mongodb.MongoDBPipeline':300}
+ITEM_PIPELINES = {
+        'scrapy_mongodb.MongoDBPipeline':300,
+        'khcc.pipelines.ImgurPipeline':400
+        }
+
 db_uri = os.environ["MONGODB_URI"]
 MONGODB_URI = db_uri
 MONGODB_DATABASE = 'khcc'
@@ -98,7 +103,7 @@ home=os.environ.get("HOME","/tmp")
 csv=os.path.join(home, "visitcount.csv")
 FEED_URI="file://%s" % csv
 
-CHROME_SPIDER=True  # True or False
+CHROME_SPIDER=True # True or False
 
 DOWNLOADER_MIDDLEWARES = {
     'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
