@@ -8,7 +8,6 @@ import os
 import datetime
 from scrapy.utils.project import get_project_settings
 import pytz
-import requests
 
 TZ=pytz.timezone("Asia/Taipei")
 
