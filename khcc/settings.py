@@ -69,7 +69,7 @@ DOWNLOAD_DELAY = 3
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
         'scrapy_mongodb.MongoDBPipeline':300,
-        'khcc.pipelines.ImgurPipeline':400
+        'khcc.pipelines.ImgurPipeline':1
         }
 
 db_uri = os.environ["MONGODB_URI"]
