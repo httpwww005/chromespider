@@ -107,3 +107,6 @@ DOWNLOADER_MIDDLEWARES = {
     'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
     'scrapy_fake_useragent.middleware.RandomUserAgentMiddleware': 400,
 }
+
+RETRY_TIMES = 2
+RETRY_HTTP_CODES = [500, 503, 504, 400, 408]
