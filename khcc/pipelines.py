@@ -74,10 +74,20 @@ class ImgurPipeline(object):
 		'description': url
 	    }
 
-            image = self.imgur_client.upload_from_url(
-                    url=url, 
-                    config=config, 
-                    anon=self.imgur_anonymous)
+            retry_count = 2
+
+            while retry_count > 0:
+                try:
+                    image = self.imgur_client.upload_from_url(
+                            url=url, 
+                            config=config, 
+                            anon=self.imgur_anonymous)
+                except:
+                    retry_count -= 1
+                    continue
+
+                break
+
 
             if(image):
                 logger.debug('image: %s' % image)
