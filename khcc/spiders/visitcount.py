@@ -89,26 +89,35 @@ class VisitcountSpider(scrapy.Spider):
 
         hrefs = [url for url in hrefs if(("DATA=" in url) and ("_HISTORY-" in url))]
 
-        comp = re.compile("^.*DATA=(\d+)&AP.*$")
 
-        urls = []
-        for href in hrefs:
-            m = comp.match(href)
-            if m:
-                if int(m.group(1)) >= self.data_least:
-                    urls.append(href)
+        if len(hrefs) > 0:
+            comp = re.compile("^.*DATA=(\d+)&AP.*$")
+            urls = []
 
+            for href in hrefs:
+                m = comp.match(href)
+                if m:
+                    url = None
+                    data = int(m.group(1))
+                    if data >= self.data_least:
+                        if self.is_chromespider:
+                            url = href
+                        else:
+                            url = urlparse.urljoin(self.allowed_domains[0], href)
+                        
+                        meta = {"data":data}
 
-        if len(urls) > 0:
-            if not self.is_chromespider:
-                urls = [urlparse.urljoin(self.allowed_domains[0],x) for x in urls]
-
-            for url in urls:
-                if( self.upload_image ):
-                    yield scrapy.Request(url=url, callback=self.parse_img, dont_filter=True)
-                else:
-                    yield scrapy.Request(url=url, callback=self.parse, dont_filter=True)
-            
+                        if self.upload_image:
+                            yield scrapy.Request(url=url, 
+                                    callback=self.parse_img, 
+                                    meta=meta, 
+                                    dont_filter=True)
+                        else:
+                            yield scrapy.Request(url=url, 
+                                    callback=self.parse, 
+                                    meta=meta, 
+                                    dont_filter=True)
+             
             if "4011_HISTORY" in response.url:
                 self.url_pat1_index += 1
                 next_url = self.url_pat1 % self.url_pat1_index
@@ -163,9 +172,11 @@ class VisitcountSpider(scrapy.Spider):
         image_urls = response.xpath(xpath_img).extract()
         self.logger.debug('image_urls: %s' % image_urls)
         image_urls = [urlparse.urljoin(self.url_base, urllib.quote(x.encode("utf-8"))) for x in image_urls if x]
-
+        data = response.meta['data']
+    
         yield {'location':location,
                 'address':address,
                 'created_on':self.created_on,
+                'data':data,
                 'image_urls':image_urls
                 }
