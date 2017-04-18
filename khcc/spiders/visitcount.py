@@ -124,7 +124,7 @@ class VisitcountSpider(scrapy.Spider):
                                     meta=meta, 
                                     dont_filter=True)
              
-            if "4011_HISTORY" in response.url:
+            if "4001_HISTORY" in response.url:
                 self.url_pat1_index += 1
                 next_url = self.url_pat1 % self.url_pat1_index
             else:
