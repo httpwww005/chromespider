@@ -21,6 +21,7 @@ class VisitcountSpider(scrapy.Spider):
     def __init__(self, 
             upload_image="n", 
             chrome_spider="n", 
+            imgur_anonymous="y",
             imgur_album=None, 
             data_least=0,
             imgur_delay=0):
@@ -31,6 +32,11 @@ class VisitcountSpider(scrapy.Spider):
             self.upload_image = True
         else:
             self.upload_image = False
+
+        if imgur_anonymous == "y":
+            self.imgur_anonymous = True
+        else:
+            self.imgur_anonymous = False
 
         if chrome_spider == "y":
             self.is_chromespider = True
