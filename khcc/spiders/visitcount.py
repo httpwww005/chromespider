@@ -8,6 +8,7 @@ import os
 import datetime
 from scrapy.utils.project import get_project_settings
 import pytz
+from urlparse import urlparse
 
 TZ=pytz.timezone("Asia/Taipei")
 
@@ -110,8 +111,9 @@ class VisitcountSpider(scrapy.Spider):
                             url = href
                         else:
                             url = urlparse.urljoin(self.allowed_domains[0], href)
-                        
-                        meta = {"data":data}
+
+                        #path = urlparse(url).path
+                        meta = {"data":data, "path":path}
 
                         if self.upload_image:
                             yield scrapy.Request(url=url, 
@@ -177,7 +179,8 @@ class VisitcountSpider(scrapy.Spider):
         xpath_img = "//img[@alt='%s']/@src" % address
         image_urls = response.xpath(xpath_img).extract()
         self.logger.debug('image_urls: %s' % image_urls)
-        image_urls = [urlparse.urljoin(self.url_base, urllib.quote(x.encode("utf-8"))) for x in image_urls if x]
+        #image_urls = [urlparse.urljoin(self.url_base, urllib.quote(x.encode("utf-8"))) for x in image_urls if x]
+        image_urls = [urllib.quote(x.encode("utf-8")) for x in image_urls if x]
         data = response.meta['data']
     
         yield {'location':location,

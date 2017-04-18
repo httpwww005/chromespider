@@ -11,6 +11,7 @@ import time
 import scrapy
 import logging
 from datetime import datetime
+import urlparse
 
 logger = logging.getLogger(__name__)
 
@@ -47,6 +48,7 @@ class ImgurPipeline(object):
         self.imgur_album_id = spider.imgur_album_id
         self.imgur_delay = spider.imgur_delay # upload limit, 1 hour 50 images, 60/50=1.2
         self.imgur_anonymous = spider.imgur_anonymous
+        self.url_base = spider.url_base
 
         if(self.upload_image):
             self.imgur_init()
@@ -67,7 +69,7 @@ class ImgurPipeline(object):
         imgur_urls = []
         images = []
         for i in range(0, len(item['image_urls'])):
-            url = item['image_urls'][i]
+            url = urlparse.urljoin(self.url_base, item['image_urls'][i])
 	    config = {
 		'album': self.imgur_album_id,
 		'title': "%s %s %02d" % (item['location'], item['address'], i+1),
@@ -83,6 +85,7 @@ class ImgurPipeline(object):
                             config=config, 
                             anon=self.imgur_anonymous)
                 except:
+                    logger.debug('retry upload_from_url(): %d' % retry_count)
                     retry_count -= 1
                     continue
 
@@ -94,7 +97,7 @@ class ImgurPipeline(object):
 
                 deletehash = image["deletehash"]
                 image_id = image["id"]
-                original_url = url
+                original_url = item['image_urls'][i]
 
                 detail = {
                         "deletehash":deletehash,
