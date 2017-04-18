@@ -112,7 +112,6 @@ class VisitcountSpider(scrapy.Spider):
                         else:
                             url = urlparse.urljoin(self.allowed_domains[0], href)
 
-                        #path = urlparse(url).path
                         meta = {"data":data, "path":path}
 
                         if self.upload_image:
@@ -179,7 +178,6 @@ class VisitcountSpider(scrapy.Spider):
         xpath_img = "//img[@alt='%s']/@src" % address
         image_urls = response.xpath(xpath_img).extract()
         self.logger.debug('image_urls: %s' % image_urls)
-        #image_urls = [urlparse.urljoin(self.url_base, urllib.quote(x.encode("utf-8"))) for x in image_urls if x]
         image_urls = [urllib.quote(x.encode("utf-8")) for x in image_urls if x]
         data = response.meta['data']
     
