@@ -111,7 +111,7 @@ class VisitcountSpider(scrapy.Spider):
                         else:
                             url = urlparse.urljoin(self.allowed_domains[0], href)
 
-                        meta = {"data":data, "path":path}
+                        meta = {"data":data}
 
                         if self.upload_image:
                             yield scrapy.Request(url=url, 
