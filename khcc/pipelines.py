@@ -66,17 +66,24 @@ class ImgurPipeline(object):
         if not self.upload_image:
             return item
 
+        if item["location"] == u"左營":
+            abbr = "ZY"
+        else:
+            abbr = "FS"
+
         imgur_urls = []
         images = []
         for i in range(0, len(item['image_urls'])):
             url = urlparse.urljoin(self.url_base, item['image_urls'][i])
+            address = item["address"].replace("-","_")
+            desc = "%s\n#%s%s" % (url, abbr, address)
 	    config = {
 		'album': self.imgur_album_id,
 		'title': "%s %s %02d" % (item['location'], item['address'], i+1),
-		'description': url
+		'description': desc
 	    }
 
-            retry_count = 2
+            retry_count = 5
 
             while retry_count > 0:
                 try:
