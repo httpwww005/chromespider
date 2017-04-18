@@ -18,7 +18,13 @@ class VisitcountSpider(scrapy.Spider):
     allowed_domains = ["http://khvillages.khcc.gov.tw"]
     url_base = "http://khvillages.khcc.gov.tw/"
 
-    def __init__(self, upload_image="n", chrome_spider="n", imgur_album=None, imgur_delay=0):
+    def __init__(self, 
+            upload_image="n", 
+            chrome_spider="n", 
+            imgur_album=None, 
+            data_least=0,
+            imgur_delay=0):
+
         self.created_on = datetime.datetime.now(TZ)
 
         if upload_image == "y":
@@ -32,6 +38,8 @@ class VisitcountSpider(scrapy.Spider):
             self.is_chromespider = False
 
         self.imgur_delay = int(imgur_delay)
+
+        self.data_least = int(data_least)
         
         self.imgur_album = imgur_album
 
@@ -40,8 +48,6 @@ class VisitcountSpider(scrapy.Spider):
         self.url_pat1_index = 1
         self.url_pat2_index = 1
         self.url_pats = [self.url_pat1, self.url_pat2]
-
-        self.data_least = 2066
 
         if self.is_chromespider:
             from selenium import webdriver
