@@ -22,7 +22,7 @@ class VisitcountSpider(scrapy.Spider):
             upload_image="n", 
             chrome_spider="n", 
             imgur_anonymous="y",
-            imgur_album=None, 
+            imgur_album_id=None, 
             data_least=0,
             imgur_delay=0):
 
@@ -47,7 +47,7 @@ class VisitcountSpider(scrapy.Spider):
 
         self.data_least = int(data_least)
         
-        self.imgur_album = imgur_album
+        self.imgur_album_id = imgur_album_id
 
         self.url_pat1 = 'http://khvillages.khcc.gov.tw/home02.aspx?ID=$4001&IDK=2&AP=$4001_SK--1^$4001_SK2--1^$4001_PN-%d^$4001_HISTORY-0'
         self.url_pat2 = 'http://khvillages.khcc.gov.tw/home02.aspx?ID=$4011&IDK=2&AP=$4011_SK-^$4011_SK2--1^$4011_PN-%d^$4011_HISTORY-0'
