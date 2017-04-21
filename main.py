@@ -31,7 +31,7 @@ header = ["created_on", "location", "address", "count"]
 
 
 def get_rows(from_date, to_date):
-    data = collection.find({"created_on":{"$gte":from_date,"$lt":to_date}})
+    data = collection.find({"created_on":{"$gte":from_date,"$lt":to_date}}).distinct("address")
     rows = [[str(x["created_on"].date()), x["location"], x["address"], x["count"]] for x in data]
     return rows
 
