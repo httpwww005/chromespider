@@ -31,7 +31,39 @@ header = ["created_on", "location", "address", "count"]
 
 
 def get_rows(from_date, to_date):
-    data = collection.find({"created_on":{"$gte":from_date,"$lt":to_date}}).distinct("address")
+    pipeline = [
+            {
+                "$match":
+                {
+                    "created_on":
+                    {
+                        "$gte":from_date,
+                        "$lt":to_date
+                    }
+                }
+            },
+            {
+                "$group":
+                {
+                    "_id":"$address",
+                    "address":{"$first":"$address"},
+                    "count":{"$max":"$count"},
+                    "location":{"$first":"$location"},
+                    "created_on":{"$first":"$created_on"}
+                }
+            },
+            {
+                "$project":
+                {
+                    "_id":0,
+                    "address":1,
+                    "count":1,
+                    "location":1,
+                    "created_on":1
+                }
+            }]
+
+    data = collection.aggregate(pipeline)
     rows = [[str(x["created_on"].date()), x["location"], x["address"], x["count"]] for x in data]
     return rows
 
