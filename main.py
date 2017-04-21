@@ -38,7 +38,7 @@ def get_rows(from_date, to_date):
 
 @get('/')
 def index():
-    all_dates = list(collection.find({},{"created_on":1}).distinct("created_on"))
+    all_dates = list(set(collection.distinct("created_on")))
     all_dates = sorted([str(x.date()) for x in all_dates])
     return template('index',header=header,dates=all_dates,heroku_release=heroku_release,re_created_on=re_created_on)
 
