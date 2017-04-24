@@ -69,7 +69,7 @@ def get_rows(from_date, to_date):
     for d in data:
         address = re.match(r"^[^\d]+([\d-]*).*$",d["address"]).group(1) 
         img_url = "<a href=\"/images/%s\">%s</a>" % (address, address)
-        rows.append([str(d["created_on"].date()), d["location"], address, d["count"], img_url])
+        rows.append([str(d["created_on"].date()), d["location"], d["address"], d["count"], img_url])
 
     return rows
 
