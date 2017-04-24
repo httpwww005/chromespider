@@ -93,7 +93,8 @@ def csv(created_on):
     filename = "%s.csv" % created_on
     fp = fs_db.get_last_version(filename)
     data = fp.read()
-    response.content_type = "text/csv"
+    response['Content-Type'] = "text/csv"
+    response['Content-Disposition'] = 'inline; filename="%s"' % filename
     return data
 
 
