@@ -2,6 +2,7 @@ from __future__ import print_function
 import json
 import sys
 from bottle import get, route, run, template
+import re
 import datetime
 from datetime import date
 from bottle import response
@@ -23,11 +24,11 @@ client = pymongo.MongoClient(MONGODB_URI)
 client_csv = pymongo.MongoClient(MONGODBCSV_URI)
 db_csv = client_csv["csv"]
 fs_db = gridfs.GridFS(db_csv)
-collection = client["khcc"]["visitcount"].with_options(codec_options=CodecOptions(tz_aware=True,tzinfo=TZ))
+collection_visitcount = client["khcc"]["visitcount"].with_options(codec_options=CodecOptions(tz_aware=True,tzinfo=TZ))
 
 heroku_release = os.environ.get("HEROKU_RELEASE_VERSION","unknow")
 
-header = ["created_on", "location", "address", "count"]
+header = ["created_on", "location", "address", "count", "images"]
 
 
 def get_rows(from_date, to_date):
@@ -63,14 +64,19 @@ def get_rows(from_date, to_date):
                 }
             }]
 
-    data = collection.aggregate(pipeline)
-    rows = [[str(x["created_on"].date()), x["location"], x["address"], x["count"]] for x in data]
+    rows = []
+    data = collection_visitcount.aggregate(pipeline)
+    for d in data:
+        address = re.match(r"^[^\d]+([\d-]*).*$",d["address"]).group(1) 
+        img_url = "<a href=\"/images/%s\">%s</a>" % (address, address)
+        rows.append([str(d["created_on"].date()), d["location"], address, d["count"], img_url])
+
     return rows
 
 
 @get('/')
 def index():
-    all_dates = list(collection.distinct("created_on"))
+    all_dates = list(collection_visitcount.distinct("created_on"))
     all_dates = sorted(set([str(x.date()) for x in all_dates]))
     return template('index',header=header,dates=all_dates,heroku_release=heroku_release,re_created_on=re_created_on)
 
@@ -97,6 +103,13 @@ def csv(created_on):
     response['Content-Disposition'] = 'inline; filename="%s"' % filename
     return data
 
+
+@route('/images/<house_id:re:[\d-]+>')
+def images(house_id):
+    collection = client["khcc"]["imgur"]
+    images = list(collection.find({"address":house_id}))[0]["images"]
+
+    return template('images', images = images)
 
 port = int(os.environ.get('PORT',5000))
 run(host='0.0.0.0', port=port, debug=False, reloader=True)
