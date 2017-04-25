@@ -13,7 +13,7 @@
 	<div id="images">
 		% if len(images) > 0:
 			% for image in images:
-				<img border=3 src="http://i.imgur.com/{{image["id"]}}.jpg" />
+				<a href="http://i.imgur.com/{{image["id"]}}.jpg"> <img border=3 src="http://i.imgur.com/{{image["id"]}}.jpg" /> </a>
 			% end
 		% end
 	</div>
