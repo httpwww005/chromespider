@@ -109,7 +109,10 @@ def images(house_id):
     collection = client["khcc"]["imgur"]
     images = list(collection.find({"address":house_id}))[0]["images"]
 
-    return template('images', images = images)
+    collection_gdimages = client["khcc"]["gdimages"]
+    gdimages = list(collection_gdimages.find({"address":house_id}))
+
+    return template('images', images = images, gdimages=gdimages)
 
 port = int(os.environ.get('PORT',5000))
 run(host='0.0.0.0', port=port, debug=False, reloader=True)
