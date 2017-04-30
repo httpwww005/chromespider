@@ -67,7 +67,7 @@ def get_rows(from_date, to_date):
     rows = []
     data = collection_visitcount.aggregate(pipeline)
     for d in data:
-        rows.append([str(d["created_on"].date()), d["location"], d["address"], d["count"])
+        rows.append([str(d["created_on"].date()), d["location"], d["address"], d["count"]])
 
     return rows
 
