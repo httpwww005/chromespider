@@ -28,7 +28,7 @@ collection_visitcount = client["khcc"]["visitcount"].with_options(codec_options=
 
 heroku_release = os.environ.get("HEROKU_RELEASE_VERSION","unknow")
 
-header = ["created_on", "location", "address", "count", "images"]
+header = ["created_on", "location", "address", "count"]
 
 
 def get_rows(from_date, to_date):
@@ -67,9 +67,7 @@ def get_rows(from_date, to_date):
     rows = []
     data = collection_visitcount.aggregate(pipeline)
     for d in data:
-        address = re.match(r"^[^\d]+([\d-]*).*$",d["address"]).group(1) 
-        img_url = "<a href=\"/images/%s\">%s</a>" % (address, address)
-        rows.append([str(d["created_on"].date()), d["location"], d["address"], d["count"], img_url])
+        rows.append([str(d["created_on"].date()), d["location"], d["address"], d["count"])
 
     return rows
 
@@ -103,16 +101,6 @@ def csv(created_on):
     response['Content-Disposition'] = 'inline; filename="%s"' % filename
     return data
 
-
-@route('/images/<house_id:re:[\d-]+>')
-def images(house_id):
-    collection = client["khcc"]["imgur"]
-    images = list(collection.find({"address":house_id}))[0]["images"]
-
-    collection_gdimages = client["khcc"]["gdimages"]
-    gdimages = list(collection_gdimages.find({"address":house_id}))
-
-    return template('images', images = images, gdimages=gdimages)
 
 port = int(os.environ.get('PORT',5000))
 run(host='0.0.0.0', port=port, debug=False, reloader=True)
